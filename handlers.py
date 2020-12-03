@@ -35,7 +35,7 @@ def setup_handlers(mw: Ui_MainWindow):
             mw.src2.clear()
             mw.tsi.clear()
         else:
-            mw.err1.appendPlainText(" --- Succesful --- ")
+            mw.err1.appendPlainText(" !--- Succesful ---! ")
             mw.pass2.setEnabled(True)
 
     mw.pass1.clicked.connect(pass1_handler2)
@@ -51,7 +51,7 @@ def setup_handlers(mw: Ui_MainWindow):
             mw.src3.clear()
             return
         else:
-            mw.err2.appendPlainText(" --- Succesful --- ")
+            mw.err2.appendPlainText(" !--- Succesful ---! ")
 
         mw.src3.appendPlainText(H)
         mw.src3.appendPlainText(I)
