@@ -1,0 +1,5 @@
+JMP	1	4
+Loadr1	2	4
+Loadr2	3	4
+Add 	4	2
+Save	5	4
