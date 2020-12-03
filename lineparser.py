@@ -1,10 +1,7 @@
 from shlex import shlex
-from dataclasses import dataclass
 from typing import *
 
-from exceptions import *
-
-from tko import Operation, TKO
+from tko import TKO
 
 directives = [
     'byte',
@@ -13,7 +10,7 @@ directives = [
     'end'
 ]
 
-registers = [f"r{i}" for i in range(15)]
+registers = [f"r{i}" for i in range(16)]
 
 
 def is_cmd(name: str, tko: TKO) -> bool:
