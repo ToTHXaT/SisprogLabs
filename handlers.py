@@ -43,9 +43,11 @@ def setup_handlers(mw: Ui_MainWindow):
     def pass2_handler2():
         mw.err2.clear()
         mw.src3.clear()
+        mw.tm.clear()
         global fpr
         try:
-            H,I,E = do_second_pass(fpr)
+            frmt = mw.format_choose.currentText()
+            H, I, E, tm = do_second_pass(fpr, frmt)
         except Exception as e:
             mw.err2.appendPlainText(str(e))
             mw.src3.clear()
@@ -56,6 +58,11 @@ def setup_handlers(mw: Ui_MainWindow):
         mw.src3.appendPlainText(H)
         mw.src3.appendPlainText(I)
         mw.src3.appendPlainText(E)
+
+        mw.tm.setRowCount(len(tm))
+
+        for i, tmi in enumerate(tm):
+            mw.tm.setItem(i, 0, QTableWidgetItem(tmi))
 
     mw.pass2.clicked.connect(pass2_handler2)
 

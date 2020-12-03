@@ -17,7 +17,7 @@
    <widget class="QPushButton" name="pass1">
     <property name="geometry">
      <rect>
-      <x>490</x>
+      <x>290</x>
       <y>780</y>
       <width>90</width>
       <height>32</height>
@@ -216,7 +216,7 @@
    <widget class="QPushButton" name="pass2">
     <property name="geometry">
      <rect>
-      <x>860</x>
+         <x>680</x>
       <y>780</y>
       <width>90</width>
       <height>32</height>
@@ -243,29 +243,107 @@
     <property name="focusPolicy">
      <enum>Qt::NoFocus</enum>
     </property>
-    <property name="acceptDrops">
-     <bool>false</bool>
-    </property>
-    <property name="undoRedoEnabled">
-     <bool>false</bool>
-    </property>
-    <property name="readOnly">
-     <bool>true</bool>
-    </property>
+       <property name="acceptDrops">
+           <bool>false</bool>
+       </property>
+       <property name="undoRedoEnabled">
+           <bool>false</bool>
+       </property>
+       <property name="readOnly">
+           <bool>true</bool>
+       </property>
    </widget>
+      <widget class="QTableWidget" name="tm">
+          <property name="geometry">
+              <rect>
+                  <x>840</x>
+                  <y>310</y>
+                  <width>111</width>
+                  <height>281</height>
+              </rect>
+          </property>
+          <property name="focusPolicy">
+              <enum>Qt::NoFocus</enum>
+          </property>
+          <property name="editTriggers">
+              <set>QAbstractItemView::NoEditTriggers</set>
+          </property>
+          <property name="tabKeyNavigation">
+              <bool>false</bool>
+          </property>
+          <property name="showDropIndicator" stdset="0">
+              <bool>false</bool>
+          </property>
+          <property name="dragDropOverwriteMode">
+              <bool>false</bool>
+          </property>
+          <property name="rowCount">
+              <number>2</number>
+          </property>
+          <property name="columnCount">
+              <number>1</number>
+          </property>
+          <attribute name="horizontalHeaderVisible">
+              <bool>false</bool>
+          </attribute>
+          <attribute name="horizontalHeaderHighlightSections">
+              <bool>false</bool>
+          </attribute>
+          <attribute name="verticalHeaderVisible">
+              <bool>false</bool>
+          </attribute>
+          <attribute name="verticalHeaderHighlightSections">
+              <bool>false</bool>
+          </attribute>
+          <row/>
+          <row/>
+          <column/>
+      </widget>
+      <widget class="KComboBox" name="format_choose">
+          <property name="geometry">
+              <rect>
+                  <x>420</x>
+                  <y>850</y>
+                  <width>221</width>
+                  <height>21</height>
+              </rect>
+          </property>
+          <item>
+              <property name="text">
+                  <string>DIrect</string>
+              </property>
+          </item>
+          <item>
+              <property name="text">
+                  <string>Relative</string>
+              </property>
+          </item>
+          <item>
+              <property name="text">
+                  <string>Mixed</string>
+              </property>
+          </item>
+      </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionLoad">
-   <property name="text">
-    <string>Load </string>
-   </property>
+      <property name="text">
+          <string>Load</string>
+      </property>
   </action>
-  <action name="actionLoad_2">
-   <property name="text">
-    <string>Load</string>
-   </property>
-  </action>
+     <action name="actionLoad_2">
+         <property name="text">
+             <string>Load</string>
+         </property>
+     </action>
  </widget>
- <resources/>
- <connections/>
+    <customwidgets>
+        <customwidget>
+            <class>KComboBox</class>
+            <extends>QComboBox</extends>
+            <header>kcombobox.h</header>
+        </customwidget>
+    </customwidgets>
+    <resources/>
+    <connections/>
 </ui>

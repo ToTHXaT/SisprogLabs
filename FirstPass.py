@@ -1,12 +1,10 @@
 from typing import *
 
-from PyQt5.QtWidgets import QPlainTextEdit, QTableWidget, QTableWidgetItem
+from constants import _convert
 from exceptions import *
-from num import to_int, to_int_safe
-from lineparser import parse_line
 from lineparser import Command, Directive
-
-from constants import convert, ConstantRepr, _convert
+from lineparser import parse_line
+from num import to_int
 from tko import Operation, TKO
 
 
@@ -39,9 +37,8 @@ class FPR(NamedTuple):
     header: Header
     tsi: Dict[str, int]
     ac: int
-    op_l: List[Union[Dir, Cmd]]
+    op_l: List[Union[Tuple[int, Dir], Tuple[int, Cmd]]]
     res_line: str
-
 
 
 def check_header(lines: Iterator[Tuple[int, str]], tko: TKO) -> Header:
@@ -66,6 +63,7 @@ def check_header(lines: Iterator[Tuple[int, str]], tko: TKO) -> Header:
         load_addr = to_int(header_parsed_line.args[0])
     except Exception:
         raise Exception(f'[{i}]: Invalid load address')
+
 
     return Header(header_parsed_line.label, load_addr)
 
@@ -112,7 +110,7 @@ def do_first_pass(src: str, tko: TKO):
 
             ac += op.length
 
-            op_l.append(Cmd(i, op, pl.args))
+            op_l.append((ac - op.length, Cmd(i, op, pl.args)))
         else:
 
             res_line += pl.dir + ' '
@@ -122,7 +120,7 @@ def do_first_pass(src: str, tko: TKO):
 
             ac += length
 
-            op_l.append(Dir(i, pl.dir, pl.args))
+            op_l.append((ac - length, Dir(i, pl.dir, pl.args)))
 
         res_line += '\n'
 

@@ -45,6 +45,7 @@ def parse_line(line: str, tko: TKO, i: int) -> Union[Command, Directive]:
 
     try:
         shl = shlex(line, posix=False)
+        shl.wordchars += '~'
         shl.whitespace += ','
         sp = list(shl)
     except Exception as e:
