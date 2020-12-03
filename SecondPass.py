@@ -1,14 +1,9 @@
-from pprint import pprint
 from typing import *
 
-from FP import FirstPassResults
-from FP import Command, Directive
-
-from parsedline import is_dir, is_cmd, is_reg
-from num import to_int
-from constants import convert
 from FirstPass import FPR, Cmd, Dir
 from constants import _convert
+from constants import convert
+from lineparser import is_reg
 
 
 def make_bin(op: str, tsi: Dict[str, int], i: int = 0) -> str:

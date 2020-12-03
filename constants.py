@@ -2,9 +2,7 @@ from typing import *
 
 from bitstring import Bits
 
-from parsedline import ParsedLine
 from num import to_int_safe
-from dataclasses import dataclass
 
 
 def twos(num: int, bt: int) -> str:
