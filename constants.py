@@ -74,10 +74,10 @@ def _convert(cs: str, typ: str, i: Optional[int] = 0) -> ConstantRepr:
     if int_repr := to_int_safe(cs):
 
         if typ == 'byte':
-            if abs(int_repr) > 2 ** 8: raise Exception(f'[{i}]: `{cs}` is too big for byte')
+            if abs(int_repr) >= 2 ** 8: raise Exception(f'[{i}]: `{cs}` is too big for byte')
             length = 8
         elif typ == 'word':
-            if abs(int_repr) > 2 ** 16: raise Exception(f'[{i}]: `{cs}` is too big for word')
+            if abs(int_repr) >= 2 ** 16: raise Exception(f'[{i}]: `{cs}` is too big for word')
             length = 16
         else:
             raise Exception(' Unimplemented `constants._convert` ')
@@ -85,7 +85,7 @@ def _convert(cs: str, typ: str, i: Optional[int] = 0) -> ConstantRepr:
         if int_repr >= 0:
             code = hex(int_repr)[2:].zfill(length // 4)
         else:
-            code = twos(int_repr, length)
+            code = hex(int(twos(int_repr, length), 2))[2:].zfill(length // 4)
 
         if typ == 'word':
             code = reverse_bits(code)
@@ -105,8 +105,22 @@ def _convert(cs: str, typ: str, i: Optional[int] = 0) -> ConstantRepr:
 
     elif (cs.startswith('"') and cs.endswith('"')) or (cs.startswith("'") and cs.endswith("'")):
         s = cs[1:-1]
-        length = s.__len__() * 8
-        code = "".join((hex(ord(i))[2:].zfill(2) for i in s))
+
+        if typ == 'byte':
+            length = s.__len__() * 8
+            code = "".join((hex(ord(i))[2:].zfill(2) for i in s))
+        elif typ == 'word':
+            length = s.__len__() * 16
+            code = "".join((hex(ord(i))[2:] + '00').zfill(4) for i in s)
+    elif len(cs) == 1 and cs[0] == '?':
+        if typ == 'byte':
+            length = 8
+        elif typ == 'word':
+            length = 16
+        else:
+            raise Exception(' Unimplemented `constants._convert` ')
+
+        code = "".join(('0' for i in range(length // 4)))
     else:
         raise Exception(f'[{i}]: `{cs}` - Invalid constant')
 

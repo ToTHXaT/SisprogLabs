@@ -46,30 +46,33 @@ def do_second_pass(fpr: FPR):
             if len(cmd.args) == 1:
                 if is_label(cmd.args[0], fpr.tsi):
                     if cmd.op.length != 4:
-                        raise Exception(f"[{i.i}]: Invalid params type for `{cmd.op.name}` operation")
+                        raise Exception(f"[{i.i}]: Invalid param type for `{cmd.op.name}` operation")
                     code = cmd.op.code * 4 + 1
+                elif is_reg(cmd.args[0]):
+                    if cmd.op.length != 1:
+                        raise Exception(f"[{i.i}]: Invalid param type for `{cmd.op.name}` operation")
+                    code = cmd.op.code * 4
                 else:
                     code = cmd.op.code * 4
             else:
                 if is_label(cmd.args[0], fpr.tsi) and is_label(cmd.args[1], fpr.tsi):
-                    if cmd.op.length != 6:
-                        raise Exception(f"[{i.i}]: Invalid params type for `{cmd.op.name}` operation")
-                    code = cmd.op.code * 4 + 1
+                    raise Exception(f"[{i.i}]: Error. Memory to memory operation.")
+
                 elif is_reg(cmd.args[0]) and is_reg(cmd.args[1]):
                     if cmd.op.length != 2:
-                        raise Exception(f"[{i.i}]: Invalid params type for `{cmd.op.name}` operation")
+                        raise Exception(f"[{i.i}]: Invalid param type for `{cmd.op.name}` operation")
                     code = cmd.op.code * 4
                 elif to_int_safe(cmd.args[1]) and is_reg(cmd.args[0]):
                     if cmd.op.length != 2:
-                        raise Exception(f"[{i.i}]: Invalid params type for `{cmd.op.name}` operation")
+                        raise Exception(f"[{i.i}]: Invalid param type for `{cmd.op.name}` operation")
                     code = cmd.op.code * 4
                 elif is_reg(cmd.args[0]) and is_label(cmd.args[1], fpr.tsi):
                     if cmd.op.length != 4:
-                        raise Exception(f"[{i.i}]: Invalid params type for `{cmd.op.name}` operation")
+                        raise Exception(f"[{i.i}]: Invalid param type for `{cmd.op.name}` operation")
                     code = cmd.op.code * 4 + 1
                 elif is_reg(cmd.args[1]) and is_label(cmd.args[0], fpr.tsi):
                     if cmd.op.length != 4:
-                        raise Exception(f"[{i.i}]: Invalid params type for `{cmd.op.name}` operation")
+                        raise Exception(f"[{i.i}]: Invalid param type for `{cmd.op.name}` operation")
                     code = cmd.op.code * 4 + 1
 
                 else:
@@ -83,7 +86,7 @@ def do_second_pass(fpr: FPR):
             dir: Dir = i
             I_line += f"T {hex(i.ac)[2:].zfill(6)} {hex(dir.length)[2:].zfill(2)} " + ' '.join(
                 (_convert(j, dir.dir, dir.i).code for j in dir.args)) + '\n'
-    E_line = f'{hex(fpr.header.load_addr)[2:]}'
+    E_line = f'E {hex(fpr.end.load_addr)[2:].zfill(12)}'
 
 
     return H_line, I_line, E_line

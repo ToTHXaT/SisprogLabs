@@ -13,6 +13,9 @@ def setup_handlers(mw: Ui_MainWindow):
         global fpr
         mw.err1.clear()
         mw.src2.clear()
+        mw.err2.clear()
+        mw.src3.clear()
+        mw.pass2.setEnabled(False)
         try:
             tko = TKO(mw.tko)
 
@@ -26,7 +29,7 @@ def setup_handlers(mw: Ui_MainWindow):
 
             for i, (k, v) in enumerate(fpr.tsi.items()):
                 tsi_table.setItem(i, 0, QTableWidgetItem(f'{k}'))
-                tsi_table.setItem(i, 1, QTableWidgetItem(f'{hex(v)[2:].zfill(8)}'))
+                tsi_table.setItem(i, 1, QTableWidgetItem(f'{hex(v)[2:].zfill(6)}'))
 
             mw.src2.appendPlainText(fpr.res_line)
 

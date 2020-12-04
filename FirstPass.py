@@ -2,7 +2,7 @@ from typing import *
 
 from constants import _convert
 from exceptions import *
-from lineparser import Command, Directive
+from lineparser import Command, Directive, is_reg
 from lineparser import parse_line
 from num import to_int
 from tko import Operation, TKO
@@ -18,6 +18,10 @@ def get_lines_from_src(src: str) -> Iterator[Tuple[int, str]]:
 
 class Header(NamedTuple):
     program_name: str
+    load_addr: int
+
+
+class End(NamedTuple):
     load_addr: int
 
 
@@ -43,7 +47,7 @@ class FPR(NamedTuple):
     ac: int
     op_l: List[Union[Dir, Cmd]]
     res_line: str
-
+    end: End
 
 
 def check_header(lines: Iterator[Tuple[int, str]], tko: TKO) -> Header:
@@ -85,15 +89,42 @@ def do_first_pass(src: str, tko: TKO):
     res_line = ''
 
     for i, line in lines:
-        res_line += f'{hex(ac)[2:].zfill(8)}: '
+        res_line += f'{hex(ac)[2:].zfill(6)}: '
         pl = parse_line(line, tko, i)
 
         if type(pl) is Directive and pl.dir.lower() == 'end':
             was_end = True
             ac = ac - header.load_addr
+
+            if len(pl.args) == 1:
+
+                try:
+                    end_load_addr = to_int(pl.args[0])
+                except:
+                    raise Exception(f'[{i}]: `{pl.args[0]}` - invalid')
+
+                if header.load_addr <= end_load_addr <= header.load_addr + ac:
+                    end_load_addr = End(end_load_addr)
+                    break
+                else:
+                    raise Exception(
+                        f'[{i}]: boot address is bigger than  load address plus module size or lower than load addres')
+            elif len(pl.args) == 0:
+                end_load_addr = End(header.load_addr)
+
+            if len(pl.args) > 1:
+                raise Exception(f'[{i}]: Invalid end directive format')
+
             break
 
         if pl.label:
+
+            if not pl.label.isidentifier():
+                raise Exception(f'[{i}]: `{pl.label}` wrong format for label')
+
+            if is_reg(pl.label):
+                raise Exception(f'[{i}]: Label and register name conflict')
+
             if tsi.get(pl.label):
                 raise DuplicateSymbolicNameException(i)
             else:
@@ -118,9 +149,13 @@ def do_first_pass(src: str, tko: TKO):
         else:
 
             res_line += pl.dir + ' '
+
             res_line += ', '.join(pl.args)
 
-            length = sum(_convert(i, pl.dir).length for i in pl.args)
+            if len(pl.args) == 0:
+                raise Exception(f'[{i}]: No arguments provided')
+
+            length = sum(_convert(j, pl.dir, i).length for j in pl.args)
 
             ac += length
 
@@ -128,6 +163,7 @@ def do_first_pass(src: str, tko: TKO):
 
         res_line += '\n'
 
-    return FPR(header, tsi, ac, op_l, res_line)
+    if header.load_addr + ac > int('ffffff', 16):
+        raise Exception(f'[-]: Not enough memory. Keep the Load address + module length below `ffffff`')
 
-
+    return FPR(header, tsi, ac, op_l, res_line, end_load_addr)
