@@ -1,12 +1,10 @@
 from typing import *
 
-from PyQt5.QtWidgets import QPlainTextEdit, QTableWidget, QTableWidgetItem
+from constants import _convert
 from exceptions import *
-from num import to_int, to_int_safe
-from lineparser import parse_line
 from lineparser import Command, Directive
-
-from constants import convert, ConstantRepr, _convert
+from lineparser import parse_line
+from num import to_int
 from tko import Operation, TKO
 
 
@@ -27,12 +25,16 @@ class Cmd(NamedTuple):
     i: int
     op: Operation
     args: List[str]
+    length: int
+    ac: int
 
 
 class Dir(NamedTuple):
     i: int
     dir: str
     args: List[str]
+    length: int
+    ac: int
 
 
 class FPR(NamedTuple):
@@ -112,7 +114,7 @@ def do_first_pass(src: str, tko: TKO):
 
             ac += op.length
 
-            op_l.append(Cmd(i, op, pl.args))
+            op_l.append(Cmd(i, op, pl.args, op.length, ac - op.length))
         else:
 
             res_line += pl.dir + ' '
@@ -122,7 +124,7 @@ def do_first_pass(src: str, tko: TKO):
 
             ac += length
 
-            op_l.append(Dir(i, pl.dir, pl.args))
+            op_l.append(Dir(i, pl.dir, pl.args, length, ac - length))
 
         res_line += '\n'
 
