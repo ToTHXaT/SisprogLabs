@@ -48,7 +48,7 @@ class OpeartionCodeDoubleDefinitionException(TKOError):
 
 class CodeIsTooLargeException(TKOError):
     def __str__(self):
-        return f'TKO: Code is too large at row {self.args[0]}'
+        return f'TKO: Code is too large at row {self.args[0]}. Max 63'
 
 
 class HeaderNotFoundException(ParseError):

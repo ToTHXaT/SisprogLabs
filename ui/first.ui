@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1101</width>
+    <width>1165</width>
     <height>923</height>
    </rect>
   </property>
@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>PushButton</string>
+     <string>Pass 1</string>
     </property>
    </widget>
    <widget class="QTableWidget" name="tko">
@@ -99,6 +99,7 @@
     </property>
     <property name="font">
      <font>
+      <family>Monospace</family>
       <pointsize>12</pointsize>
      </font>
     </property>
@@ -141,6 +142,7 @@
     </property>
     <property name="font">
      <font>
+      <family>Monospace</family>
       <pointsize>12</pointsize>
      </font>
     </property>
@@ -200,12 +202,13 @@
      <rect>
       <x>740</x>
       <y>10</y>
-      <width>341</width>
+      <width>401</width>
       <height>281</height>
      </rect>
     </property>
     <property name="font">
      <font>
+      <family>Monospace</family>
       <pointsize>12</pointsize>
      </font>
     </property>
@@ -223,7 +226,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>PushButton</string>
+     <string>Pass 2</string>
     </property>
    </widget>
    <widget class="QPlainTextEdit" name="err2">
@@ -231,7 +234,7 @@
      <rect>
       <x>740</x>
       <y>610</y>
-      <width>341</width>
+      <width>381</width>
       <height>141</height>
      </rect>
     </property>

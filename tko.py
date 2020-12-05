@@ -1,10 +1,9 @@
-from typing import List, Tuple, Union, Optional
 from dataclasses import dataclass
+from typing import List, Union, Optional
 
 from PyQt5 import QtWidgets
 
 from exceptions import *
-
 from num import to_int
 
 
@@ -70,7 +69,7 @@ class TKO:
         except ValueError:
             raise CodeIsNotBinaryException(row_num + 1)
 
-        if int_code > 255:
+        if int_code > 63:
             raise CodeIsTooLargeException(row_num + 1)
 
         if length < 1:
