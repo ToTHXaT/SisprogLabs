@@ -166,4 +166,7 @@ def do_first_pass(src: str, tko: TKO):
     if header.load_addr + ac > int('ffffff', 16):
         raise Exception(f'[-]: Not enough memory. Keep the Load address + module length below `ffffff`')
 
+    if not was_end:
+        raise Exception(f'[-]: No end statment')
+
     return FPR(header, tsi, ac, op_l, res_line, end_load_addr)
