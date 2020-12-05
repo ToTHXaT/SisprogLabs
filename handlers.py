@@ -15,6 +15,7 @@ def setup_handlers(mw: Ui_MainWindow):
         mw.src2.clear()
         mw.err2.clear()
         mw.src3.clear()
+        mw.tm.clear()
         mw.pass2.setEnabled(False)
         try:
             tko = TKO(mw.tko)

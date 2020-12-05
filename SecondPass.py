@@ -19,23 +19,19 @@ def make_bin(op: str, tsi: Dict[str, int], tm: List[str], load_addr: int, frmt: 
         return hex(int(op[1:]))[2:].zfill(2)
     elif code := tsi.get(op):
 
-        print(hex(code)[2:].zfill(8), frmt, hex(ac), hex(load_addr))
-        if frmt[0] == 'D':
-            tm.append(hex(ac - load_addr)[2:].zfill(8))
-            return hex(code)[2:].zfill(8)
-        elif frmt[0] == 'R' or frmt[0] == 'M':
-            return hex(code - load_addr)[2:].zfill(8)
+        if frmt[0] == 'D' or frmt[0] == 'M':
+            tm.append(hex(ac - load_addr)[2:].zfill(6))
+            return hex(code)[2:].zfill(6)
+        elif frmt[0] == 'R':
+            return hex(code - load_addr)[2:].zfill(6)
         else:
             return ""
     elif op.startswith('~') and (code := tsi.get(op[1:])):
 
-        print('$', hex(code)[2:].zfill(8), frmt)
-
         if frmt[0] == 'D' or frmt[0] == 'R':
             raise Exception(f'[{i}]: `~` is only allowed in mixed mode')
         else:
-            tm.append(hex(ac - load_addr)[2:].zfill(8))
-            return hex(code)[2:].zfill(8)
+            return hex(code - load_addr)[2:].zfill(6)
 
     else:
         try:
