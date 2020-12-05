@@ -49,7 +49,7 @@ def check_strings(f: Callable[[str, TKO, int], Union[Command, Directive]]) -> Ca
         if type(dir_or_cmd) is Directive:
             dirc = cast(Directive, dir_or_cmd)
 
-            print(dirc.label, dirc.dir, dirc.args)
+            # print(dirc.label, dirc.dir, dirc.args)
 
             return dirc
         else:
@@ -78,7 +78,7 @@ def handle_string(line: str, tko: TKO, i: int):
 
     rind = line.rfind(ch)
 
-    if rind == -1: raise Exception(f"[{i}]: No closing quotation")
+    if rind == -1 or rind == lind: raise Exception(f"[{i}]: No closing quotation")
 
     if line[rind + 1:] != "":
         raise Exception(f'[{i}]: Invalid string format')
@@ -91,7 +91,7 @@ def handle_string(line: str, tko: TKO, i: int):
 
     pl = parse_line(line, tko, i)
 
-    print(pl, prm, ch, lind, rind, line)
+    #print(pl, prm, ch, lind, rind, line)
 
     return Directive(pl.label, pl.dir, [prm])
 

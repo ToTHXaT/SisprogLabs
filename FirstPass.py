@@ -10,8 +10,15 @@ from tko import Operation, TKO
 
 def get_lines_from_src(src: str) -> Iterator[Tuple[int, str]]:
     for i, line in enumerate(src.split('\n'), start=1):
+        sc = line.rfind(';')
+        l1 = line.rfind("'")
+        l2 = line.rfind('"')
 
-        line = " ".join(line.split(';', 1)[0].split())
+        l = max(l1, l2)
+
+        if sc > l:
+            line = " ".join(line.rsplit(';', 1)[0].split())
+
         if line:
             yield i, line
 
