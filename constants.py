@@ -1,3 +1,4 @@
+import re
 from typing import *
 
 from bitstring import Bits
@@ -63,6 +64,15 @@ def convert(cs: str, i: Optional[int] = 0) -> ConstantRepr:
         s = cs[1:-1]
         length = 8
         code = hex(ord(s))[2:].zfill(2)
+    elif cs := re.match(r'[xXcC](\'|\").*(\'|\")', cs):
+        print(cs, "MATCH")
+        tp = cs[0]
+        cs = cs[2:-1]
+        length = cs.__len__() * 8
+        if tp.lower() == 'c':
+            code = "".join((hex(ord(i))[2:].zfill(2) for i in cs))
+        elif tp.lower() == 'x':
+            code = " | ".join((hex(ord(i))[2:].zfill(2) for i in cs))
     else:
         raise Exception(f'[{i}]: `{cs}` - Invalid constant')
 
@@ -121,6 +131,25 @@ def _convert(cs: str, typ: str, i: Optional[int] = 0) -> ConstantRepr:
             raise Exception(' Unimplemented `constants._convert` ')
 
         code = "".join(('0' for i in range(length // 4)))
+
+    elif cs := re.match(r'[xXcC](\'|\").*(\'|\")', cs):
+        cs = cs.group()
+        tp = cs[0]
+        cs = cs[2:-1]
+        length = cs.__len__() * 8
+        if tp.lower() == 'c':
+            code = "".join((hex(ord(i))[2:].zfill(2) for i in cs))
+        elif tp.lower() == 'x':
+            if re.match(r'^[0123456789abcdefABCDEF]*$', cs):
+                code = "".join(i for i in cs)
+                ln = code.__len__()
+                if ln % 2 == 1:
+                    ln += 1
+
+                length = (ln // 2) * 8
+                code.zfill(ln)
+            else:
+                raise Exception(f'[{i}]: Invalid byte string format')
     else:
         raise Exception(f'[{i}]: `{cs}` - Invalid constant')
 

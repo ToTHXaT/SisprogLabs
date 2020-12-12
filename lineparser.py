@@ -1,3 +1,4 @@
+import re
 from shlex import shlex
 from typing import *
 
@@ -49,7 +50,7 @@ def check_strings(f: Callable[[str, TKO, int], Union[Command, Directive]]) -> Ca
         if type(dir_or_cmd) is Directive:
             dirc = cast(Directive, dir_or_cmd)
 
-            print(dirc.label, dirc.dir, dirc.args)
+            # print(dirc.label, dirc.dir, dirc.args)
 
             return dirc
         else:
@@ -74,26 +75,33 @@ def handle_string(line: str, tko: TKO, i: int):
     else:
         raise Exception("lineparser.check_string")
 
-    ch = line[lind]
+    # ch = line[lind]
+    #
+    # rind = line.rfind(ch)
+    #
+    # if rind == -1: raise Exception(f"[{i}]: No closing quotation")
+    #
+    # if line[rind + 1:] != "":
+    #     raise Exception(f'[{i}]: Invalid string format')
+    #
+    # prm = line[lind:rind + 1]
+    # line = line[:lind] + line[rind + 1:]
+    #
+    # if ',' in line:
+    #     raise Exception(f'[{i}]: Multiple arguments prohibited when defining strings')
+    #
+    # pl = parse_line(line, tko, i)
+    #
+    # print(pl, prm, ch, lind, rind, line)
 
-    rind = line.rfind(ch)
+    pattern = r'[xXcC]?(\'.*\')|(\".*\")'
+    if prm := re.search(pattern, line):
+        line = re.sub(pattern, '', line, 1)
 
-    if rind == -1: raise Exception(f"[{i}]: No closing quotation")
-
-    if line[rind + 1:] != "":
+        pl = parse_line(line, tko, i)
+        return Directive(pl.label, pl.dir, [prm.group()])
+    else:
         raise Exception(f'[{i}]: Invalid string format')
-
-    prm = line[lind:rind + 1]
-    line = line[:lind] + line[rind + 1:]
-
-    if ',' in line:
-        raise Exception(f'[{i}]: Multiple arguments prohibited when defining strings')
-
-    pl = parse_line(line, tko, i)
-
-    print(pl, prm, ch, lind, rind, line)
-
-    return Directive(pl.label, pl.dir, [prm])
 
 
 @check_strings
