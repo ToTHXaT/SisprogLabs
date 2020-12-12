@@ -28,6 +28,14 @@ class Header(NamedTuple):
     load_addr: int
 
 
+class Extdef(NamedTuple):
+    names: List[str]
+
+
+class Extref(NamedTuple):
+    names: List[str]
+
+
 class End(NamedTuple):
     load_addr: int
 
@@ -50,7 +58,9 @@ class Dir(NamedTuple):
 
 class FPR(NamedTuple):
     header: Header
-    tsi: Dict[str, int]
+    extdef: Extdef
+    extref: Extref
+    tsi: Dict[str, Tuple[int, str]]
     ac: int
     op_l: List[Union[Tuple[int, Dir], Tuple[int, Cmd]]]
     res_line: str
@@ -83,17 +93,68 @@ def check_header(lines: Iterator[Tuple[int, str]], tko: TKO) -> Header:
     return Header(header_parsed_line.label, load_addr)
 
 
-def do_first_pass(src: str, tko: TKO):
+def check_extdef(lines: Iterator[Tuple[int, str]], tko: TKO, tsi: Dict[str, Tuple[int, str]]) -> Extdef:
+    try:
+        i, extdef = next(lines)
+    except:
+        raise Exception(f'[-]: External definitions line not found')
 
+    if type(extdef_pl := parse_line(extdef, tko, i)) != Directive:
+        raise Exception(f'[{i}]: There is no `extdef` directive or it is mentioned later')
+
+    if extdef_pl.dir != 'extdef':
+        raise Exception(f'[{i}]: There is no `extdef` directive or it is mentioned later than expected')
+
+    for arg in extdef_pl.args:
+        if not arg.isidentifier():
+            raise Exception(f'[{i}]: `{arg}` - invalid identifier')
+
+        if tsi.get(arg):
+            raise Exception(f'[{i}]: Duplicate external definition')
+
+        tsi[arg] = (-1, 'def')
+
+    return Extdef(extdef_pl.args)
+
+
+def check_extref(lines: Iterator[Tuple[int, str]], tko: TKO, tsi: Dict[str, Tuple[int, str]]) -> Extref:
+    try:
+        i, extref = next(lines)
+    except:
+        raise Exception(f'[-]: External names line not found')
+
+    if type(extref_pl := parse_line(extref, tko, i)) != Directive:
+        raise Exception(f'[{i}]: There is no `extref` directive or it is mentioned later')
+
+    if extref_pl.dir != 'extref':
+        raise Exception(f'[{i}]: There is no `extref` directive or it is mentioned later than expected')
+
+    for arg in extref_pl.args:
+        if not arg.isidentifier():
+            raise Exception(f'[{i}]: `{arg}` - invalid identifier')
+
+        if tsi.get(arg):
+            raise Exception(f'[{i}]: Duplicate external definition')
+
+        tsi[arg] = (-1, 'ref')
+
+    return Extref(extref_pl.args)
+
+
+def do_first_pass(src: str, tko: TKO):
     lines = get_lines_from_src(src)
 
     header = check_header(lines, tko)
 
     was_end = False
     ac = header.load_addr
-    tsi: Dict[str, int] = {}
+    tsi: Dict[str, Tuple[int, str]] = {}
     op_l = []
     res_line = ''
+
+    extdef = check_extdef(lines, tko, tsi)
+
+    extref = check_extref(lines, tko, tsi)
 
     for i, line in lines:
         res_line += f'{hex(ac)[2:].zfill(6)}: '
@@ -132,10 +193,18 @@ def do_first_pass(src: str, tko: TKO):
             if is_reg(pl.label):
                 raise Exception(f'[{i}]: Label and register name conflict')
 
-            if tsi.get(pl.label):
-                raise DuplicateSymbolicNameException(i)
+            if lbl := tsi.get(pl.label):
+                if lbl[1] == 'def':
+                    if lbl[0] == -1:
+                        tsi[pl.label] = (ac, 'def')
+                    else:
+                        raise Exception(f'[{i}]: Duplicate symbolic name `{pl.label}`')
+                elif lbl[1] == 'ref':
+                    raise Exception(f'[{i}]: External reference and label name conflict')
+                else:
+                    raise DuplicateSymbolicNameException(i)
             else:
-                tsi[pl.label] = ac
+                tsi[pl.label] = (ac, '')
 
         if type(pl) is Command:
 
@@ -175,4 +244,7 @@ def do_first_pass(src: str, tko: TKO):
     if not was_end:
         raise Exception(f'[-]: No end statment')
 
-    return FPR(header, tsi, ac, op_l, res_line, end_load_addr)
+    if (lond := [key for key, (addr, tp) in tsi.items() if tp == 'def' and addr == -1]):
+        raise Exception(f'[-]: Following external names were not found in program: {" ".join(i for i in lond)}')
+
+    return FPR(header, extdef, extref, tsi, ac, op_l, res_line, end_load_addr)

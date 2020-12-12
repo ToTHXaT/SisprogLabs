@@ -7,7 +7,9 @@ directives = [
     'byte',
     'word',
     'start',
-    'end'
+    'end',
+    'extref',
+    'extdef'
 ]
 
 registers = [f"r{i}" for i in range(16)]
@@ -39,23 +41,6 @@ class Directive(NamedTuple):
     label: str
     dir: str
     args: List[str]
-
-
-def check_strings(f: Callable[[str, TKO, int], Union[Command, Directive]]) -> Callable[
-    [str, TKO, int], Union[Command, Directive]]:
-    def inner(line: str, tko: TKO, i: int):
-        dir_or_cmd = f(line, tko, i)
-
-        if type(dir_or_cmd) is Directive:
-            dirc = cast(Directive, dir_or_cmd)
-
-            # print(dirc.label, dirc.dir, dirc.args)
-
-            return dirc
-        else:
-            return dir_or_cmd
-
-    return inner
 
 
 def handle_string(line: str, tko: TKO, i: int):
@@ -91,20 +76,24 @@ def handle_string(line: str, tko: TKO, i: int):
 
     pl = parse_line(line, tko, i)
 
-    #print(pl, prm, ch, lind, rind, line)
+    # print(pl, prm, ch, lind, rind, line)
 
-    return Directive(pl.label, pl.dir, [prm])
+    directive = Directive(pl.label, pl.dir, [prm])
+    if directive.dir != 'byte' and directive.dir != 'word':
+        raise Exception(f'[{i}]: Invalid usage for string')
+
+    return directive
 
 
-@check_strings
 def parse_line(line: str, tko: TKO, i: int) -> Union[Command, Directive]:
     if "'" in line or '"' in line:
         return handle_string(line, tko, i)
 
     try:
+        line = line.replace(',', ' , ').strip()
         shl = shlex(line, posix=False)
         shl.whitespace += ','
-        shl.wordchars += '-+?~'
+        shl.wordchars += '-+?~!@#$%^&*'
         sp = list(shl)
     except Exception as e:
         raise Exception(e)

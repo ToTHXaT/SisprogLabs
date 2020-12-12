@@ -1,5 +1,6 @@
 Program START 0x100
-
+extdef A1
+extref P4
 JMP L1
 A1 byte 10
 B1 word 20
@@ -11,4 +12,4 @@ Loadr2  B4
 L1 Add R1, R2
 Save R1, B2
 
-End 0x100
+End

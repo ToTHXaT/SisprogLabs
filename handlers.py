@@ -25,12 +25,18 @@ def setup_handlers(mw: Ui_MainWindow):
 
             fpr = do_first_pass(src_text, tko)
 
-            tsi_table.setRowCount(len(fpr.tsi))
-            tsi_table.setColumnCount(2)
+            tsi_table.setColumnCount(3)
 
-            for i, (k, v) in enumerate(fpr.tsi.items()):
+            tsi_table.setRowCount(len(fpr.tsi))
+
+            for i, (k, (v, tp)) in enumerate(fpr.tsi.items()):
                 tsi_table.setItem(i, 0, QTableWidgetItem(f'{k}'))
-                tsi_table.setItem(i, 1, QTableWidgetItem(f'{hex(v)[2:].zfill(6)}'))
+
+                if v >= 0:
+                    tsi_table.setItem(i, 1, QTableWidgetItem(f'{hex(v)[2:].zfill(6)}'))
+                else:
+                    tsi_table.setItem(i, 1, QTableWidgetItem(f'-'))
+                tsi_table.setItem(i, 2, QTableWidgetItem(f'{tp}'))
 
             mw.src2.appendPlainText(fpr.res_line)
 
@@ -38,6 +44,7 @@ def setup_handlers(mw: Ui_MainWindow):
             mw.err1.appendPlainText(str(e))
             mw.src2.clear()
             mw.tsi.clear()
+            raise e
         else:
             mw.err1.appendPlainText(" !--- Succesful ---! ")
             mw.pass2.setEnabled(True)
@@ -55,6 +62,7 @@ def setup_handlers(mw: Ui_MainWindow):
         except Exception as e:
             mw.err2.appendPlainText(str(e))
             mw.src3.clear()
+            raise e
             return
         else:
             mw.err2.appendPlainText(" !--- Succesful ---! ")
@@ -65,8 +73,9 @@ def setup_handlers(mw: Ui_MainWindow):
 
         mw.tm.setRowCount(len(tm))
 
-        for i, tmi in enumerate(tm):
+        for i, (tmi, name) in enumerate(tm):
             mw.tm.setItem(i, 0, QTableWidgetItem(tmi))
+            mw.tm.setItem(i, 1, QTableWidgetItem(name))
 
     mw.pass2.clicked.connect(pass2_handler2)
 
