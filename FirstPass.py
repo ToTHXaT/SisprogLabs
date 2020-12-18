@@ -214,9 +214,6 @@ def do_csect(lines: Iterator[Tuple[int, str]], csect_name: str, tko: TKO):
             if ac > int('ffffff', 16):
                 raise Exception(f'[-]: Not enough memory. Keep the Load address + module length below `ffffff`')
 
-            if not was_end:
-                raise Exception(f'[-]: No end statment')
-
             if (lond := [key for key, (addr, tp, prg) in tsi.items() if tp == 'def' and addr == -1]):
                 raise Exception(f'[-]: Following external names were not found in program: {" ".join(i for i in lond)}')
 
@@ -278,9 +275,6 @@ def do_csect(lines: Iterator[Tuple[int, str]], csect_name: str, tko: TKO):
     if ac > int('ffffff', 16):
         raise Exception(f'[-]: Not enough memory. Keep the Load address + module length below `ffffff`')
 
-    if not was_end:
-        raise Exception(f'[-]: No end statment')
-
     if (lond := [key for key, (addr, tp, prg) in tsi.items() if tp == 'def' and addr == -1]):
         raise Exception(f'[-]: Following external names were not found in program: {" ".join(i for i in lond)}')
 
@@ -312,7 +306,6 @@ def do_first_pass(src: str, tko: TKO, frmt: str):
     # extref = check_extref(lines, tko, tsi)
 
     for i, line in lines:
-        res_line += f'{hex(ac)[2:].zfill(6)}: '
         pl = parse_line(line, tko, i)
 
         if type(pl) is Directive and pl.dir.lower() == 'extdef':
@@ -333,6 +326,7 @@ def do_first_pass(src: str, tko: TKO, frmt: str):
             continue
 
         was_normal = True
+        res_line += f'{hex(ac)[2:].zfill(6)}: '
 
         if type(pl) is Directive and pl.dir.lower() == 'end':
             was_end = True

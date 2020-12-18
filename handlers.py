@@ -51,7 +51,8 @@ def setup_handlers(mw: Ui_MainWindow):
 
                 inserted += fpr.tsi.__len__()
 
-            mw.src2.appendPlainText(fpr.res_line)
+            for fpr in fpr_l:
+                mw.src2.appendPlainText(fpr.res_line + '\n ')
 
         except Exception as e:
             mw.err1.appendPlainText(str(e))
@@ -87,10 +88,15 @@ def setup_handlers(mw: Ui_MainWindow):
             mw.src3.appendPlainText(E)
             mw.src3.appendPlainText("\n")
 
-            mw.tm.setRowCount(inserted + len(tm))
+            mw.tm.setRowCount(inserted + len(tm) + 1)
             for i, (tmi, name) in enumerate(tm, inserted):
                 mw.tm.setItem(i, 0, QTableWidgetItem(tmi))
                 mw.tm.setItem(i, 1, QTableWidgetItem(name))
+
+            mw.tm.setItem(inserted + len(tm), 0, QTableWidgetItem(''))
+            mw.tm.setItem(inserted + len(tm), 1, QTableWidgetItem(''))
+
+            inserted += 1
 
             inserted += len(tm)
 
