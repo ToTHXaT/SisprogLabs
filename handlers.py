@@ -44,7 +44,6 @@ def setup_handlers(mw: Ui_MainWindow):
             mw.err1.appendPlainText(str(e))
             mw.src2.clear()
             mw.tsi.clear()
-            raise e
         else:
             mw.err1.appendPlainText(" !--- Succesful ---! ")
             mw.pass2.setEnabled(True)
