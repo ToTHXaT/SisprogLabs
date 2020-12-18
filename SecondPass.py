@@ -8,6 +8,8 @@ from num import to_int_safe
 
 
 def is_label(name: str, tsi: Dict[str, int]):
+    if name[0] == '~':
+        return bool(tsi.get(name[1:]))
     return bool(tsi.get(name))
 
 
