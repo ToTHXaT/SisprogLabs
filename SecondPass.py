@@ -50,7 +50,7 @@ def do_second_pass(fpr: FPR, frmt: str):
 
     hl = fpr.header
 
-    H_line = f'H {hl.program_name} {hex(hl.load_addr)[2:].zfill(12)} {hex(fpr.ac)[2:].zfill(12)}\n'
+    H_line = f'H {hl.program_name} {hex(hl.load_addr)[2:].zfill(6)} {hex(fpr.ac)[2:].zfill(6)}\n'
 
     I_line = ''
     for ac, i in fpr.op_l:
@@ -103,6 +103,6 @@ def do_second_pass(fpr: FPR, frmt: str):
             dir: Dir = i
             I_line += f"T {hex(i.ac)[2:].zfill(6)} {hex(dir.length)[2:].zfill(2)} " + ' '.join(
                 (_convert(j, dir.dir, dir.i).code for j in dir.args)) + '\n'
-    E_line = f'E {hex(fpr.end.load_addr)[2:].zfill(12)}'
+    E_line = f'E {hex(fpr.end.load_addr)[2:].zfill(6)}'
 
     return H_line, I_line, E_line, tm
