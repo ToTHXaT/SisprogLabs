@@ -287,7 +287,7 @@ def do_csect(lines: Iterator[Tuple[int, str]], csect_name: str, tko: TKO):
     return FPR(Header(csect_name, 0), extdef, extref, tsi, ac, op_l, res_line, end_load_addr)
 
 
-def do_first_pass(src: str, tko: TKO):
+def do_first_pass(src: str, tko: TKO, frmt: str):
     lines = get_lines_from_src(src)
 
     header = check_header(lines, tko)
@@ -303,6 +303,9 @@ def do_first_pass(src: str, tko: TKO):
     res_line = ''
     extref = Extref([])
     extdef = Extdef([])
+
+    if header.load_addr > 0 and frmt == 'R':
+        raise Exception(f'[-]: load_addr must be 0')
 
     # extdef = check_extdef(lines, tko, tsi)
     #

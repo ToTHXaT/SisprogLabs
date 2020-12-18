@@ -25,7 +25,9 @@ def setup_handlers(mw: Ui_MainWindow):
             src_text = mw.src.toPlainText()
             tsi_table = mw.tsi
 
-            fpr_l = do_first_pass(src_text, tko)
+            frmt = mw.format_choose.currentText()
+
+            fpr_l = do_first_pass(src_text, tko, frmt)
 
             tsi_table.setColumnCount(4)
 

@@ -1,4 +1,4 @@
-Program START 0x100
+Program START 0
 extdef A1
 extref P4
 JMP L1
