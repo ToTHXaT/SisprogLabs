@@ -7,7 +7,7 @@ from lineparser import is_reg
 from num import to_int_safe
 
 
-def is_label(name: str, tsi: Dict[str, Tuple[int, str]]):
+def is_label(name: str, tsi: Dict[str, Tuple[int, str, str]]):
     if name[0] == '~':
         return bool(tsi.get(name[1:]))
     return bool(tsi.get(name))

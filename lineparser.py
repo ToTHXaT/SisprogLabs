@@ -16,6 +16,21 @@ directives = [
 registers = [f"r{i}" for i in range(16)]
 
 
+def yield_lines(src: str) -> Generator[[Tuple[int, str]], None, None]:
+    for i, line in enumerate(src.split('\n'), start=1):
+        sc = line.rfind(';')
+        l1 = line.rfind("'")
+        l2 = line.rfind('"')
+
+        l = max(l1, l2)
+
+        if sc > l:
+            line = " ".join(line.rsplit(';', 1)[0].split())
+
+        if line:
+            yield i, line
+
+
 def is_cmd(name: str, tko: TKO) -> bool:
     return bool(tko.get(name))
 
@@ -30,6 +45,12 @@ def is_opr(name: str, tko: TKO) -> bool:
 
 def is_reg(name: str) -> bool:
     return name.lower() in registers
+
+
+def is_label(name: str, tsi: Dict[str, Tuple[int, str, str]]):
+    if name[0] == '~':
+        return bool(tsi.get(name[1:]))
+    return bool(tsi.get(name))
 
 
 class Command(NamedTuple):

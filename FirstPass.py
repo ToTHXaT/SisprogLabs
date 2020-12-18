@@ -94,15 +94,13 @@ def check_header(lines: Iterator[Tuple[int, str]], tko: TKO) -> Header:
 
 
 def check_extdef(pl: Directive, tko: TKO, tsi: Dict[str, Tuple[int, str, str]], csect_name: str, i: int) -> Extdef:
-    # if extdef_pl.dir != 'extdef':
-    #     raise Exception(f'[{i}]: There is no `extdef` directive or it is mentioned later than expected')
 
     for arg in pl.args:
         if not arg.isidentifier():
             raise Exception(f'[{i}]: `{arg}` - invalid identifier')
 
         if tsi.get(arg):
-            raise Exception(f'[{i}]: Duplicate external definition')
+            raise Exception(f'[{i}]: `{arg}` - duplicate external definition')
 
         tsi[arg] = (-1, 'def', csect_name)
 
@@ -110,15 +108,13 @@ def check_extdef(pl: Directive, tko: TKO, tsi: Dict[str, Tuple[int, str, str]], 
 
 
 def check_extref(pl: Directive, tko: TKO, tsi: Dict[str, Tuple[int, str, str]], csect_name: str, i: int) -> Extref:
-    # if extref_pl.dir != 'extref':
-    #     raise Exception(f'[{i}]: There is no `extref` directive or it is mentioned later than expected')
 
     for arg in pl.args:
         if not arg.isidentifier():
             raise Exception(f'[{i}]: `{arg}` - invalid identifier')
 
         if tsi.get(arg):
-            raise Exception(f'[{i}]: Duplicate external definition')
+            raise Exception(f'[{i}]: `{arg}` - duplicate external definition')
 
         tsi[arg] = (-1, 'ref', csect_name)
 

@@ -90,3 +90,4 @@ class MockTKO(TKO):
             Operation(name='add', code=1, length=2),
             Operation(name='jmp', code=2, length=4)
         ]
+
