@@ -76,7 +76,7 @@ def do_second_pass(fpr: FPR):
                     code = cmd.op.code * 4 + 1
 
                 else:
-                    raise Exception(f"[{i.i}]: Invalid params type for ``{cmd.op.name} operation")
+                    raise Exception(f"[{i.i}]: Invalid param for `{cmd.op.name}` operation")
 
             code = hex(code)[2:].zfill(2)
             I_line += f"T {hex(i.ac)[2:].zfill(6)} {hex(cmd.op.length)[2:].zfill(2)} {code} "

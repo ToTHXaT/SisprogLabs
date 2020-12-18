@@ -104,7 +104,6 @@ def handle_string(line: str, tko: TKO, i: int):
         raise Exception(f'[{i}]: Invalid string format')
 
 
-@check_strings
 def parse_line(line: str, tko: TKO, i: int) -> Union[Command, Directive]:
     if "'" in line or '"' in line:
         return handle_string(line, tko, i)
