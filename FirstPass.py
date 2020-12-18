@@ -304,7 +304,7 @@ def do_first_pass(src: str, tko: TKO, frmt: str):
     extref = Extref([])
     extdef = Extdef([])
 
-    if header.load_addr > 0 and frmt == 'R':
+    if header.load_addr > 0:
         raise Exception(f'[-]: load_addr must be 0')
 
     # extdef = check_extdef(lines, tko, tsi)

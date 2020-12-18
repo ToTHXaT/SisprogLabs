@@ -57,7 +57,6 @@ def setup_handlers(mw: Ui_MainWindow):
             mw.err1.appendPlainText(str(e))
             mw.src2.clear()
             mw.tsi.clear()
-            raise e
         else:
             mw.err1.appendPlainText(" !--- Succesful ---! ")
             mw.pass2.setEnabled(True)
@@ -74,17 +73,17 @@ def setup_handlers(mw: Ui_MainWindow):
         for fpr in fpr_l:
             try:
                 frmt = mw.format_choose.currentText()
-                H, I, E, tm = do_second_pass(fpr, frmt)
+                H, I, E, M, tm = do_second_pass(fpr, frmt)
             except Exception as e:
                 mw.err2.appendPlainText(str(e))
                 mw.src3.clear()
-                raise e
                 return
             else:
                 mw.err2.appendPlainText(" !--- Succesful ---! ")
 
             mw.src3.appendPlainText(H)
             mw.src3.appendPlainText(I)
+            mw.src3.appendPlainText(M)
             mw.src3.appendPlainText(E)
             mw.src3.appendPlainText("\n")
 

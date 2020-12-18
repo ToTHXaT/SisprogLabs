@@ -124,4 +124,9 @@ def do_second_pass(fpr: FPR, frmt: str):
                 (_convert(j, dir.dir, dir.i).code for j in dir.args)) + '\n'
     E_line = f'E {hex(fpr.end.load_addr)[2:].zfill(6)}'
 
-    return H_line, I_line, E_line, tm
+    M_line = ""
+
+    for i, (tmi, name) in enumerate(tm):
+        M_line += f"M {tmi} {name}\n"
+
+    return H_line, I_line, E_line, M_line, tm
