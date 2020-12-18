@@ -9,7 +9,8 @@ directives = [
     'start',
     'end',
     'extref',
-    'extdef'
+    'extdef',
+    'csect'
 ]
 
 registers = [f"r{i}" for i in range(16)]
