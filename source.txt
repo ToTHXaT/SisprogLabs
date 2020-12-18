@@ -11,5 +11,7 @@ L2 loadr1 B2
 Loadr2  B4
 L1 Add R1, R2
 Save R1, B2
+f1 csect
+v1 byte 10
 
 End

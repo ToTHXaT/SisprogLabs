@@ -14,6 +14,7 @@ def is_label(name: str, tsi: Dict[str, Tuple[int, str]]):
 
 
 def make_bin(op: str, tsi: Dict[str, Tuple[int, str]], tm: List[Tuple[str, str]], load_addr: int, frmt: str, ac: int,
+             prg_name: str,
              i: int = 0) -> str:
     if op is None:
         return ""
@@ -66,7 +67,7 @@ def do_second_pass(fpr: FPR, frmt: str):
 
     hl = fpr.header
 
-    H_line = f'H {hl.program_name} {hex(hl.load_addr)[2:].zfill(12)} {hex(fpr.ac)[2:].zfill(12)}\n'
+    H_line = f'H {hl.program_name} {hex(hl.load_addr)[2:].zfill(6)} {hex(fpr.ac)[2:].zfill(6)}\n'
 
     I_line = ''
 
@@ -114,12 +115,13 @@ def do_second_pass(fpr: FPR, frmt: str):
 
             code = hex(code)[2:].zfill(2)
             I_line += f"T {hex(i.ac)[2:].zfill(6)} {hex(cmd.op.length)[2:].zfill(2)} {code} "
-            I_line += " ".join((make_bin(j, fpr.tsi, tm, hl.load_addr, frmt, ac, i.i) for j in cmd.args)) + '\n'
+            I_line += " ".join(
+                (make_bin(j, fpr.tsi, tm, hl.load_addr, frmt, ac, hl.program_name, i.i) for j in cmd.args)) + '\n'
 
         else:
             dir: Dir = i
             I_line += f"T {hex(i.ac)[2:].zfill(6)} {hex(dir.length)[2:].zfill(2)} " + ' '.join(
                 (_convert(j, dir.dir, dir.i).code for j in dir.args)) + '\n'
-    E_line = f'E {hex(fpr.end.load_addr)[2:].zfill(12)}'
+    E_line = f'E {hex(fpr.end.load_addr)[2:].zfill(6)}'
 
     return H_line, I_line, E_line, tm
