@@ -83,11 +83,13 @@ def check_header(lines: Iterator[Tuple[int, str]], tko: TKO) -> Header:
     return Header(header_parsed_line.label, load_addr)
 
 
-def do_first_pass(src: str, tko: TKO):
-
+def do_first_pass(src: str, tko: TKO, frmt: str):
     lines = get_lines_from_src(src)
 
     header = check_header(lines, tko)
+
+    if frmt[0] == 'R' and header.load_addr != 0:
+        raise Exception(f'[-]: Load addr should be zero')
 
     was_end = False
     ac = header.load_addr
