@@ -88,7 +88,7 @@ def do_first_pass(src: str, tko: TKO, frmt: str):
 
     header = check_header(lines, tko)
 
-    if frmt[0] == 'R' and header.load_addr != 0:
+    if header.load_addr != 0:
         raise Exception(f'[-]: Load addr should be zero')
 
     was_end = False
