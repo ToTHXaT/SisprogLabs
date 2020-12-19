@@ -7,24 +7,24 @@
     <x>0</x>
     <y>0</y>
     <width>1347</width>
-    <height>923</height>
+    <height>919</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="cw">
-   <widget class="QPushButton" name="pass1">
-    <property name="geometry">
-        <rect>
-            <x>390</x>
-            <y>800</y>
-            <width>90</width>
-            <height>32</height>
-        </rect>
-    </property>
-    <property name="text">
-     <string>Pass 1</string>
+      <widget class="QPushButton" name="full_pass">
+          <property name="geometry">
+              <rect>
+                  <x>30</x>
+                  <y>710</y>
+                  <width>90</width>
+                  <height>32</height>
+              </rect>
+          </property>
+          <property name="text">
+              <string>Full</string>
     </property>
    </widget>
    <widget class="QTableWidget" name="tko">
@@ -105,14 +105,14 @@
     </property>
    </widget>
    <widget class="QPlainTextEdit" name="err1">
-    <property name="geometry">
-        <rect>
-            <x>380</x>
-            <y>650</y>
-            <width>341</width>
-            <height>141</height>
-        </rect>
-    </property>
+       <property name="geometry">
+           <rect>
+               <x>810</x>
+               <y>640</y>
+               <width>431</width>
+               <height>281</height>
+           </rect>
+       </property>
     <property name="font">
      <font>
       <pointsize>12</pointsize>
@@ -133,12 +133,12 @@
    </widget>
    <widget class="QPlainTextEdit" name="src2">
     <property name="geometry">
-     <rect>
-         <x>380</x>
-      <y>10</y>
-      <width>341</width>
-      <height>281</height>
-     </rect>
+        <rect>
+            <x>810</x>
+            <y>10</y>
+            <width>431</width>
+            <height>621</height>
+        </rect>
     </property>
     <property name="font">
      <font>
@@ -151,20 +151,20 @@
     </property>
    </widget>
    <widget class="QTableWidget" name="tsi">
-    <property name="geometry">
-        <rect>
-            <x>380</x>
-            <y>310</y>
-            <width>341</width>
-            <height>321</height>
-        </rect>
-    </property>
-    <property name="focusPolicy">
-     <enum>Qt::NoFocus</enum>
-    </property>
-    <property name="editTriggers">
-        <set>QAbstractItemView::NoEditTriggers</set>
-    </property>
+       <property name="geometry">
+           <rect>
+               <x>360</x>
+               <y>10</y>
+               <width>441</width>
+               <height>621</height>
+           </rect>
+       </property>
+       <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
+       </property>
+       <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
+       </property>
        <property name="tabKeyNavigation">
            <bool>false</bool>
        </property>
@@ -186,87 +186,41 @@
        <attribute name="horizontalHeaderVisible">
            <bool>false</bool>
        </attribute>
-    <attribute name="horizontalHeaderHighlightSections">
-     <bool>false</bool>
-    </attribute>
-    <attribute name="verticalHeaderVisible">
-     <bool>false</bool>
-    </attribute>
-    <attribute name="verticalHeaderHighlightSections">
-     <bool>false</bool>
-    </attribute>
-    <row/>
+       <attribute name="horizontalHeaderHighlightSections">
+           <bool>false</bool>
+       </attribute>
+       <attribute name="verticalHeaderVisible">
+           <bool>false</bool>
+       </attribute>
+       <attribute name="verticalHeaderHighlightSections">
+           <bool>false</bool>
+       </attribute>
+       <row/>
     <row/>
        <column/>
     <column/>
     <column/>
    </widget>
-   <widget class="QPlainTextEdit" name="src3">
-    <property name="geometry">
-     <rect>
-         <x>790</x>
-      <y>10</y>
-         <width>491</width>
-      <height>281</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Monospace</family>
-      <pointsize>12</pointsize>
-     </font>
-    </property>
-    <property name="readOnly">
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pass2">
-    <property name="geometry">
-        <rect>
-            <x>800</x>
-            <y>800</y>
-            <width>90</width>
-            <height>32</height>
-        </rect>
-    </property>
-    <property name="text">
-     <string>Pass 2</string>
-    </property>
-   </widget>
-   <widget class="QPlainTextEdit" name="err2">
-    <property name="geometry">
-        <rect>
-            <x>790</x>
-            <y>650</y>
-            <width>491</width>
-            <height>141</height>
-        </rect>
-    </property>
-       <property name="font">
-           <font>
-               <pointsize>12</pointsize>
-           </font>
-       </property>
-       <property name="focusPolicy">
-           <enum>Qt::NoFocus</enum>
-       </property>
-       <property name="acceptDrops">
-           <bool>false</bool>
-       </property>
-       <property name="undoRedoEnabled">
-           <bool>false</bool>
-       </property>
-       <property name="readOnly">
-           <bool>true</bool>
-       </property>
-   </widget>
+      <widget class="QPushButton" name="one_step">
+          <property name="geometry">
+              <rect>
+                  <x>140</x>
+                  <y>710</y>
+                  <width>90</width>
+                  <height>32</height>
+              </rect>
+          </property>
+          <property name="text">
+              <string>One step</string>
+          </property>
+      </widget>
       <widget class="QTableWidget" name="tm">
           <property name="geometry">
               <rect>
-                  <x>930</x>
-                  <y>310</y>
-                  <width>211</width>
-                  <height>321</height>
+                  <x>360</x>
+                  <y>640</y>
+                  <width>441</width>
+                  <height>261</height>
               </rect>
           </property>
           <property name="focusPolicy">
@@ -310,8 +264,8 @@
       <widget class="KComboBox" name="format_choose">
           <property name="geometry">
               <rect>
-                  <x>40</x>
-                  <y>800</y>
+                  <x>30</x>
+                  <y>650</y>
                   <width>221</width>
                   <height>21</height>
               </rect>
@@ -331,6 +285,19 @@
                   <string>Mixed</string>
               </property>
           </item>
+      </widget>
+      <widget class="QPushButton" name="reset">
+          <property name="geometry">
+              <rect>
+                  <x>80</x>
+                  <y>800</y>
+                  <width>90</width>
+                  <height>32</height>
+              </rect>
+          </property>
+          <property name="text">
+              <string>Reset</string>
+          </property>
       </widget>
   </widget>
      <widget class="QStatusBar" name="statusbar"/>

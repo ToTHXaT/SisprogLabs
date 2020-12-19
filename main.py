@@ -1,17 +1,13 @@
 import sys
-from PyQt5 import QtCore, QtGui, QtWidgets, QtWidgets, uic
-from PyQt5.QtWidgets import QFileDialog, QTableWidgetItem
+
+from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import QTableWidgetItem
+
+from one_pass_handler import setup_handlers
 from ui.first import Ui_MainWindow
-from pprint import pprint
-
-from typing import *
-from dataclasses import dataclass
-
-from handlers import setup_handlers
 
 
 def load_from_files(mw: Ui_MainWindow):
-
     with open('source.txt', 'r') as file:
         mw.src.appendPlainText(file.read())
 

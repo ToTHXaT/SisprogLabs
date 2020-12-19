@@ -16,7 +16,7 @@ directives = [
 registers = [f"r{i}" for i in range(16)]
 
 
-def yield_lines(src: str) -> Generator[[Tuple[int, str]], None, None]:
+def yield_lines(src: str) -> Generator[Tuple[int, str], None, None]:
     for i, line in enumerate(src.split('\n'), start=1):
         sc = line.rfind(';')
         l1 = line.rfind("'")

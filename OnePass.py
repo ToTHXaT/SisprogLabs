@@ -8,10 +8,16 @@ def do_one_pass(src: str, _tko: TKO):
     global tko
     tko = _tko
 
-    header: Header
+    header: Header = Header(None, None, None)
     extref: Extref = Extref([])
     extdef: Extdef = Extdef([])
+    end: End = End(None)
     tsi: Dict[str, Tuple[int, str, str]] = {}
+    op_l: List[Union[Tuple[int, Directive], Tuple[int, Command]]] = []
+
+    module = Module(header, extref, extdef, op_l, end, tsi)
+
+    output: Module
 
     state = {
         'was_refs' : False,
@@ -24,6 +30,8 @@ def do_one_pass(src: str, _tko: TKO):
     lines = yield_lines(src)
 
     header = check_header(lines, tko)
+
+    yield Module(header, extref, extdef, op_l, end, tsi)
 
     for i, line in lines:
         pl = parse_line(line, tko, i)

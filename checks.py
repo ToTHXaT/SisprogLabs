@@ -1,10 +1,20 @@
-from tko import TKO
-
 from exceptions import *
 from lineparser import Directive, parse_line
 from num import *
 from tko import Operation
 from tko import TKO
+
+
+class Header(NamedTuple):
+    program_name: str
+    load_addr: int
+    module_len: Union[int, str]
+
+    def __str__(self):
+        if self.program_name is None and self.load_addr is None and self.module_len is None:
+            return ''
+
+        return f'H {self.program_name or "-"} {hex(self.load_addr or 0)[2:].zfill(6)} {hex(self.module_len or 0)[2:].zfill(6)}\n'
 
 
 class Extdef(NamedTuple):
@@ -24,6 +34,9 @@ class Extref(NamedTuple):
 class End(NamedTuple):
     load_addr: int
 
+    def __str__(self):
+        return f'E {self.load_addr}'
+
 
 class Cmd(NamedTuple):
     i: int
@@ -33,13 +46,24 @@ class Cmd(NamedTuple):
     ac: int
 
 
-class Header(NamedTuple):
-    program_name: str
-    load_addr: int
-    module_len: int
+class Dir(NamedTuple):
+    i: int
+    dir: str
+    args: List[str]
+    length: int
+    ac: int
+
+
+class Module(NamedTuple):
+    header: Header
+    extdef: Extdef
+    extref: Extref
+    op_l: List[Union[Tuple[int, Dir], Tuple[int, Cmd]]]
+    end: End
+    tsi: Dict[str, Tuple[int, str, str]]
 
     def __str__(self):
-        return f'H {self.program_name} {hex(self.load_addr)[2:].zfill(6)} {hex(self.module_len)[2:].zfill(6)}\n'
+        return f'{self.header}\n{self.extdef}\n{self.extref}\n{self.op_l}\n{self.end}'
 
 
 def check_header(lines: Iterator[Tuple[int, str]], tko: TKO) -> Header:
@@ -65,7 +89,7 @@ def check_header(lines: Iterator[Tuple[int, str]], tko: TKO) -> Header:
     except Exception:
         raise Exception(f'[{i}]: Invalid load address')
 
-    return Header(header_parsed_line.label, load_addr)
+    return Header(header_parsed_line.label, load_addr, '')
 
 
 def check_extdef(pl: Directive, tsi: Dict[str, Tuple[int, str, str]], csect_name: str, i: int) -> Extdef:
