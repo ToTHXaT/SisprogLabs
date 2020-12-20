@@ -121,6 +121,9 @@ def _convert(cs: str, typ: str, i: Optional[int] = 0) -> ConstantRepr:
             raise Exception(' Unimplemented `constants._convert` ')
 
         code = "".join(('0' for i in range(length // 4)))
+    elif cs.isidentifier():
+        code = cs
+        lenght = 3 * 8
     else:
         raise Exception(f'[{i}]: `{cs}` - Invalid constant')
 

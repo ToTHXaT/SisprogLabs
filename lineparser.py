@@ -130,7 +130,7 @@ def parse_line(line: str, tko: TKO, i: int) -> Union[Command, Directive]:
         if is_cmd(cmd, tko):
             return Command(None, cmd, [])
         elif is_dir(cmd):
-            return Directive(None, cmd, [])
+            return Directive(None, cmd.lower(), [])
         else:
             raise Exception(f'[{i}]: {cmd} is not an operation')
 
@@ -140,13 +140,13 @@ def parse_line(line: str, tko: TKO, i: int) -> Union[Command, Directive]:
         if is_cmd(cmd, tko):
             return Command(label, cmd, args)
         elif is_dir(cmd):
-            return Directive(label, cmd, args)
+            return Directive(label, cmd.lower(), args)
 
         cmd, *args = sp
 
         if is_cmd(cmd, tko):
             return Command(None, cmd, args)
         elif is_dir(cmd):
-            return Directive(None, cmd, args)
+            return Directive(None, cmd.lower(), args)
 
         raise Exception(f'[{i}]: Invalid line. `{args[0]}` is neither operation nor directive.')

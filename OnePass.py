@@ -1,10 +1,11 @@
 from checks import *
+from constants import _convert
 from lineparser import yield_lines, Command
 
 tko: TKO = None
 
 
-def do_one_pass(src: str, _tko: TKO):
+def do_one_pass(src: str, _tko: TKO, frmt: str):
     global tko
     tko = _tko
 
@@ -12,12 +13,13 @@ def do_one_pass(src: str, _tko: TKO):
     extref: Extref = Extref([])
     extdef: Extdef = Extdef([])
     end: End = End(None)
-    tsi: Dict[str, Tuple[int, str, str]] = {}
-    op_l: List[Union[Tuple[int, Directive], Tuple[int, Command]]] = []
+    tsi: Dict[str, Tuple[int, str, str, List[int]]] = {}
+    op_l: List[Union[Dir, Cmd]] = []
+    tm: TM = TM([])
+    ac = 0
 
-    module = Module(header, extref, extdef, op_l, end, tsi)
-
-    output: Module
+    module = Module(header, extref, extdef, op_l, end, tsi, tm)
+    module_l: List[Module] = []
 
     state = {
         'was_refs' : False,
@@ -30,11 +32,13 @@ def do_one_pass(src: str, _tko: TKO):
     lines = yield_lines(src)
 
     header = check_header(lines, tko)
+    ac = header.load_addr
 
-    yield Module(header, extref, extdef, op_l, end, tsi)
+    yield [*module_l, Module(header, extref, extdef, op_l, end, tsi, tm)]
 
     for i, line in lines:
         pl = parse_line(line, tko, i)
+        print(pl)
 
         if type(pl) is Directive:
             if pl.dir == 'start':
@@ -47,6 +51,8 @@ def do_one_pass(src: str, _tko: TKO):
 
                 extref = check_extref(pl, tsi, header.program_name, i)
                 state['was_extref'] = True
+
+                yield [*module_l, Module(header, extref, extdef, op_l, end, tsi, tm)]
                 continue
 
             if pl.dir == 'extdef':
@@ -57,20 +63,97 @@ def do_one_pass(src: str, _tko: TKO):
 
                 extdef = check_extdef(pl, tsi, header.program_name, i)
                 state['was_extdef'] = True
+
+                yield [*module_l, Module(header, extref, extdef, op_l, end, tsi, tm)]
                 continue
 
             state['was_norm'] = True
 
             if pl.dir == 'csect':
                 pass
-            if pl.dir == 'byte':
-                pass
-            if pl.dir == 'word':
-                pass
+
             if pl.dir == 'end':
                 state['was_end'] = True
+                if pl.args and (end_addr := to_int_safe(pl.args[0])):
+                    end = End(end_addr)
+                else:
+                    end = End(header.load_addr)
+
+                header = Header(header.program_name, header.load_addr, ac - header.load_addr)
+
+                module_l.append(Module(header, extref, extdef, op_l, end, tsi, tm))
+
+                yield module_l
+                break
 
         state['was_norm'] = True
 
+        if pl.label:
+            if l := tsi.get(pl.label):
+                addr, tp, sect, ref_l = l
+
+                if tp == 'ref':
+                    raise Exception(f'[{i}]: Duplicate symbolic name `{pl.label}`')
+                else:
+                    if addr != -1:
+                        raise Exception(f'[{i}]: Duplicate symbolic name `{pl.label}`')
+                    else:
+                        tsi.update({pl.label: (ac, tp, sect, [])})
+                        for ref in ref_l:
+                            try:
+                                ln = next(op for op in op_l if op.ac == ref)
+
+                                if ln.args.__len__() == 2:
+                                    if ln.args[1] == pl.label:
+                                        ln.args[1] = make_bin(ln.args[1], tsi, tm, header.load_addr, frmt, ac,
+                                                              header.program_name, i)
+                                    elif ln.args[1][0] == '~' and ln.args[1][1:] == pl.label:
+                                        ln.args[1] = make_bin(ln.args[1], tsi, tm, header.load_addr, frmt, ac,
+                                                              header.program_name, i)
+
+                                    if ln.args[0] == pl.label:
+                                        ln.args[0] = make_bin(ln.args[0], tsi, tm, header.load_addr, frmt, ac,
+                                                              header.program_name, i)
+                                    elif ln.args[0][0] == '~' and ln.args[0][1:] == pl.label:
+                                        ln.args[0] = make_bin(ln.args[0], tsi, tm, header.load_addr, frmt, ac,
+                                                              header.program_name, i)
+
+                                elif ln.args.__len__() == 1:
+                                    if ln.args[0] == pl.label:
+                                        ln.args[0] = make_bin(ln.args[0], tsi, tm, header.load_addr, frmt, ac,
+                                                              header.program_name, i)
+                                    elif ln.args[0][0] == '~' and ln.args[0][1:] == pl.label:
+                                        ln.args[0] = make_bin(ln.args[0], tsi, tm, header.load_addr, frmt, ac,
+                                                              header.program_name, i)
+
+                            except StopIteration:
+                                raise Exception(f'[{i}]: Hz')
+            else:
+                tsi[pl.label] = (ac, '', header.program_name, [])
+
+        if type(pl) is Directive:
+            if pl.dir == 'byte' or pl.dir == 'word':
+
+                if len(pl.args) == 0:
+                    raise Exception(f'[{i}]: No arguments provided')
+
+                length = sum(_convert(j, pl.dir, i).length for j in pl.args)
+
+                ac += length
+
+                op_l.append(Dir(i, pl.dir, pl.args, length, ac - length))
+
         if type(pl) is Command:
-            pass
+            op = tko.get(pl.cmd)
+
+            if len(pl.args) > 2: raise Exception(f'[{i}]: No more than 2 args is possible')
+
+            ac += op.length
+
+            cmd = Cmd(i, op, pl.args, '', ac - op.length)
+
+            cmd = cmd.validate(tsi, tm, header.load_addr, frmt, header.program_name)
+
+            op_l.append(cmd)
+
+        yield [*module_l, Module(header, extref, extdef, op_l, end, tsi, tm)]
