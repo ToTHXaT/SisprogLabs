@@ -77,8 +77,8 @@ def make_bin(op: str, tsi: Dict[str, Tuple[int, str, str, List[int]]], tm: TM, l
             if code[0] == -1:
                 return op
             else:
-                print(ac, true_ac)
-                return hex(code[0] - true_ac)[2:].zfill(6)
+                print(ac, true_ac, code[0])
+                return hex(code[0] - ac)[2:].zfill(6)
                 # return hex()[2:].zfill(6)
 
     else:
