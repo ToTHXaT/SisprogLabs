@@ -83,7 +83,7 @@ def make_bin(op: str, tsi: Dict[str, Tuple[int, str, str, List[int]]], tm: TM, l
                     raise Exception(f'[{i}]: `~` is not allowed')
                 return op
             else:
-                raise Exception((str(e).split(":")[0]) + f': `{op}` Unknown identifier')
+                raise Exception((str(e).split(":")[0]) + f': `{op}` Unknown identifier or invalid format')
 
 
 class Header(NamedTuple):
@@ -293,6 +293,9 @@ def check_header(lines: Iterator[Tuple[int, str]], tko: TKO) -> Header:
         load_addr = to_int(header_parsed_line.args[0])
     except Exception:
         raise Exception(f'[{i}]: Invalid load address')
+
+    if load_addr == 0:
+        raise Exception(f'[{i}]: load addr cant be 0')
 
     return Header(header_parsed_line.label, load_addr, None)
 

@@ -48,11 +48,14 @@ def do_one_pass(src: str, _tko: TKO, frmt: str):
                 else:
                     end = End(header.load_addr)
 
-                if 0 > header.load_addr + end.load_addr or header.load_addr + end.load_addr > 0xffffff:
+                header = Header(header.program_name, header.load_addr, ac - header.load_addr)
+
+                if header.load_addr + header.module_len < 0 or header.load_addr + header.module_len > 0xffffff:
                     raise Exception(
                         '[-]: Not enough memory. Ensure that load addr + module len is lower than 0xffffff and bigger than 0')
 
-                header = Header(header.program_name, header.load_addr, ac - header.load_addr)
+                if end.load_addr < header.load_addr or end.load_addr > header.load_addr + header.module_len:
+                    raise Exception(f'[{i}]: end addr should be in range of load addr + module len.')
 
                 module_l.append(Module(header, extref, extdef, op_l, end, tsi, tm))
 
