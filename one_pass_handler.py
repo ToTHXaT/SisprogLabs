@@ -39,9 +39,12 @@ def setup_handlers(mw: Ui_MainWindow):
             is_end = True
             mw.err1.appendPlainText(" --- Success --- ")
             mw.one_step.setEnabled(False)
+            mw.full_pass.setEnabled(False)
             return True
         except Exception as e:
             mw.err1.appendPlainText(str(e))
+            mw.one_step.setEnabled(False)
+            mw.full_pass.setEnabled(False)
             return True
 
         mw.src2.clear()
@@ -70,7 +73,7 @@ def setup_handlers(mw: Ui_MainWindow):
                     tsi_table.setItem(i, 1, QTableWidgetItem(f'-'))
                 tsi_table.setItem(i, 2, QTableWidgetItem(f'{tp}'))
                 tsi_table.setItem(i, 3, QTableWidgetItem(f'{prg}'))
-                tsi_table.setItem(i, 4, QTableWidgetItem(' '.join(str(k) for k in ref_list)))
+                tsi_table.setItem(i, 4, QTableWidgetItem(' '.join(hex(k)[2:] for k in ref_list)))
 
             inserted += module.tsi.__len__()
 
@@ -102,6 +105,7 @@ def setup_handlers(mw: Ui_MainWindow):
         global tko, src_text, tsi_table, one_pass_fn
         nonlocal was_first
         mw.one_step.setEnabled(True)
+        mw.full_pass.setEnabled(True)
         tko = TKO(mw.tko)
         mw.src.setReadOnly(False)
         tsi_table = mw.tsi
