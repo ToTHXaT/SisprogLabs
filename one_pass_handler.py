@@ -18,6 +18,7 @@ def setup_handlers(mw: Ui_MainWindow):
     def handle_one_pass():
         global src_text, one_pass_fn
         nonlocal was_first
+        is_end = False
         if not was_first:
             was_first = True
             mw.src.setReadOnly(True)
@@ -35,13 +36,13 @@ def setup_handlers(mw: Ui_MainWindow):
         try:
             module_l = one_pass_fn.__next__()
         except StopIteration:
+            is_end = True
             mw.err1.appendPlainText(" --- Success --- ")
             mw.one_step.setEnabled(False)
-            return
+            return True
         except Exception as e:
             mw.err1.appendPlainText(str(e))
-            raise e
-            return
+            return True
 
         mw.src2.clear()
         mw.tsi.clear()
@@ -87,10 +88,13 @@ def setup_handlers(mw: Ui_MainWindow):
 
             inserted += len(tm)
 
+        return is_end
+
     mw.one_step.clicked.connect(handle_one_pass)
 
     def handle_full():
-        pass
+        while not handle_one_pass():
+            pass
 
     mw.full_pass.clicked.connect(handle_full)
 

@@ -16,7 +16,7 @@ class TM(NamedTuple):
         for i, (tmi, name) in enumerate(self.lst):
             M_line += f"M {tmi} {name}\n"
 
-        if M_line[-1] == '\n':
+        if M_line and M_line[-1] == '\n':
             M_line = M_line[:-1]
 
         return M_line
