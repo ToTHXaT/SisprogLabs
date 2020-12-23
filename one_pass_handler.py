@@ -41,6 +41,8 @@ def setup_handlers(mw: Ui_MainWindow):
             mw.one_step.setEnabled(False)
             return True
         except Exception as e:
+            mw.one_step.setEnabled(False)
+            mw.full_pass.setEnabled(False)
             mw.err1.appendPlainText(str(e))
             return True
 
@@ -102,6 +104,7 @@ def setup_handlers(mw: Ui_MainWindow):
         global tko, src_text, tsi_table, one_pass_fn
         nonlocal was_first
         mw.one_step.setEnabled(True)
+        mw.full_pass.setEnabled(True)
         tko = TKO(mw.tko)
         mw.src.setReadOnly(False)
         tsi_table = mw.tsi

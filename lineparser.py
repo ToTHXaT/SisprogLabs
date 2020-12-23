@@ -8,9 +8,6 @@ directives = [
     'word',
     'start',
     'end',
-    'extref',
-    'extdef',
-    'csect'
 ]
 
 registers = [f"r{i}" for i in range(16)]
