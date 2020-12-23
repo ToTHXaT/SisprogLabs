@@ -22,9 +22,6 @@ def do_one_pass(src: str, _tko: TKO, frmt: str):
     module_l: List[Module] = []
 
     state = {
-        'was_refs' : False,
-        'was_defs' : False,
-        'was_norm' : False,
         'was_end'  : False,
         'was_start': False
     }
@@ -43,64 +40,6 @@ def do_one_pass(src: str, _tko: TKO, frmt: str):
         if type(pl) is Directive:
             if pl.dir == 'start':
                 raise Exception(f'[{i}]: Duplicate start directive')
-            if pl.dir == 'extref':
-                if state.get('was_normal'):
-                    raise Exception(f'[{i}]: Extref should be on the top')
-                if state.get('was_extref'):
-                    raise Exception(f'[{i}]: Duplicate extref')
-
-                extref = check_extref(pl, tsi, header.program_name, i)
-                state['was_extref'] = True
-
-                yield [*module_l, Module(header, extref, extdef, op_l, end, tsi, tm)]
-                continue
-
-            if pl.dir == 'extdef':
-                if state.get('was_normal'):
-                    raise Exception(f'[{i}]: Extdef should be on the top')
-                if state.get('was_extdef'):
-                    raise Exception(f'[{i}]: Duplicate extdef')
-
-                extdef = check_extdef(pl, tsi, header.program_name, i)
-                state['was_extdef'] = True
-
-                yield [*module_l, Module(header, extref, extdef, op_l, end, tsi, tm)]
-                continue
-
-            state['was_norm'] = True
-
-            if pl.dir == 'csect':
-                end = End(0)
-
-                header = Header(header.program_name, header.load_addr, ac - header.load_addr)
-
-                module_l.append(Module(header, extref, extdef, op_l, end, tsi, tm))
-
-                header: Header = Header(None, None, None)
-                extref: Extref = Extref([])
-                extdef: Extdef = Extdef([])
-                end: End = End(None)
-                tsi: Dict[str, Tuple[int, str, str, List[int]]] = {}
-                op_l: List[Union[Dir, Cmd]] = []
-                tm: TM = TM([])
-                ac = 0
-
-                module = Module(header, extref, extdef, op_l, end, tsi, tm)
-
-                state = {
-                    'was_refs' : False,
-                    'was_defs' : False,
-                    'was_norm' : False,
-                    'was_end'  : False,
-                    'was_start': False
-                }
-
-                header = Header(pl.label, 0, None)
-
-                ac = 0
-
-                yield [*module_l, Module(header, extref, extdef, op_l, end, tsi, tm)]
-                continue
 
             if pl.dir == 'end':
                 state['was_end'] = True
@@ -109,6 +48,10 @@ def do_one_pass(src: str, _tko: TKO, frmt: str):
                 else:
                     end = End(header.load_addr)
 
+                if 0 > header.load_addr + end.load_addr or header.load_addr + end.load_addr > 0xffffff:
+                    raise Exception(
+                        '[-]: Not enough memory. Ensure that load addr + module len is lower than 0xffffff and bigger than 0')
+
                 header = Header(header.program_name, header.load_addr, ac - header.load_addr)
 
                 module_l.append(Module(header, extref, extdef, op_l, end, tsi, tm))
@@ -116,7 +59,6 @@ def do_one_pass(src: str, _tko: TKO, frmt: str):
                 yield module_l
                 break
 
-        state['was_norm'] = True
 
         if pl.label:
             if l := tsi.get(pl.label):
@@ -187,3 +129,6 @@ def do_one_pass(src: str, _tko: TKO, frmt: str):
             op_l.append(cmd)
 
         yield [*module_l, Module(header, extref, extdef, op_l, end, tsi, tm)]
+
+    if not state.get('was_end'):
+        raise Exception(f'[-]: No end statement')

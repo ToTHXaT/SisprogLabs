@@ -11,15 +11,8 @@ class TM(NamedTuple):
     lst: List[Tuple[str, str]]
 
     def __str__(self):
-        M_line = ""
+        return ""
 
-        for i, (tmi, name) in enumerate(self.lst):
-            M_line += f"M {tmi} {name}\n"
-
-        if M_line and M_line[-1] == '\n':
-            M_line = M_line[:-1]
-
-        return M_line
 
 
 def make_bin(op: str, tsi: Dict[str, Tuple[int, str, str, List[int]]], tm: TM, load_addr: int,
@@ -72,7 +65,7 @@ def make_bin(op: str, tsi: Dict[str, Tuple[int, str, str, List[int]]], tm: TM, l
             return hex(0)[2:].zfill(6)
 
         if frmt[0] == 'D' or frmt[0] == 'R':
-            raise Exception(f'[{i}]: `~` is only allowed in mixed mode')
+            raise Exception(f'[{i}]: `~` is not allowed')
         else:
             if code[0] == -1:
                 return op
@@ -87,7 +80,7 @@ def make_bin(op: str, tsi: Dict[str, Tuple[int, str, str, List[int]]], tm: TM, l
                 return op
             elif op[0] == '~' and op[1:].isidentifier():
                 if frmt[0] in ('R', 'D'):
-                    raise Exception(f'[{i}]: `~` is only allowed in mixed mode')
+                    raise Exception(f'[{i}]: `~` is not allowed')
                 return op
             else:
                 raise Exception((str(e).split(":")[0]) + f': `{op}` Unknown identifier')
@@ -202,7 +195,7 @@ class Cmd(NamedTuple):
         for arg in args:
             if can_be_label(arg):
                 if frmt[0] in ('R', 'D') and arg[0] == '~':
-                    raise Exception(f'[{self.i}]: `~` is only allowed in mixed mode')
+                    raise Exception(f'[{self.i}]: `~` is not allowed')
 
                 if arg[0] == '~':
                     ag = arg[1:]
