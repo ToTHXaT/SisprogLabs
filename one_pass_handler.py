@@ -39,6 +39,7 @@ def setup_handlers(mw: Ui_MainWindow):
             is_end = True
             mw.err1.appendPlainText(" --- Success --- ")
             mw.one_step.setEnabled(False)
+            mw.full_pass.setEnabled(False)
             return True
         except Exception as e:
             mw.one_step.setEnabled(False)
