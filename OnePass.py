@@ -135,26 +135,26 @@ def do_one_pass(src: str, _tko: TKO, frmt: str):
 
                                 if ln.args.__len__() == 2:
                                     if ln.args[1] == pl.label:
-                                        ln.args[1] = make_bin(ln.args[1], tsi, tm, header.load_addr, frmt, ac,
-                                                              header.program_name, i)
+                                        ln.args[1] = make_bin(ln.args[1], tsi, tm, header.load_addr, frmt, ref,
+                                                              header.program_name, i, ac)
                                     elif ln.args[1][0] == '~' and ln.args[1][1:] == pl.label:
-                                        ln.args[1] = make_bin(ln.args[1], tsi, tm, header.load_addr, frmt, ac,
+                                        ln.args[1] = make_bin(ln.args[1], tsi, tm, header.load_addr, frmt, ref,
                                                               header.program_name, i)
 
                                     if ln.args[0] == pl.label:
-                                        ln.args[0] = make_bin(ln.args[0], tsi, tm, header.load_addr, frmt, ac,
-                                                              header.program_name, i)
+                                        ln.args[0] = make_bin(ln.args[0], tsi, tm, header.load_addr, frmt, ref,
+                                                              header.program_name, i, ac)
                                     elif ln.args[0][0] == '~' and ln.args[0][1:] == pl.label:
-                                        ln.args[0] = make_bin(ln.args[0], tsi, tm, header.load_addr, frmt, ac,
-                                                              header.program_name, i)
+                                        ln.args[0] = make_bin(ln.args[0], tsi, tm, header.load_addr, frmt, ref,
+                                                              header.program_name, i, ac)
 
                                 elif ln.args.__len__() == 1:
                                     if ln.args[0] == pl.label:
-                                        ln.args[0] = make_bin(ln.args[0], tsi, tm, header.load_addr, frmt, ac,
-                                                              header.program_name, i)
+                                        ln.args[0] = make_bin(ln.args[0], tsi, tm, header.load_addr, frmt, ref,
+                                                              header.program_name, i, ac)
                                     elif ln.args[0][0] == '~' and ln.args[0][1:] == pl.label:
-                                        ln.args[0] = make_bin(ln.args[0], tsi, tm, header.load_addr, frmt, ac,
-                                                              header.program_name, i)
+                                        ln.args[0] = make_bin(ln.args[0], tsi, tm, header.load_addr, frmt, ref,
+                                                              header.program_name, i, ac)
 
                             except StopIteration:
                                 raise Exception(f'[{i}]: Hz')
@@ -187,3 +187,6 @@ def do_one_pass(src: str, _tko: TKO, frmt: str):
             op_l.append(cmd)
 
         yield [*module_l, Module(header, extref, extdef, op_l, end, tsi, tm)]
+
+    if not state['was_end']:
+        raise Exception(f'[-]: End directive not found')

@@ -26,7 +26,7 @@ def make_bin(op: str, tsi: Dict[str, Tuple[int, str, str, List[int]]], tm: TM, l
              frmt: str,
              ac: int,
              prg_name: str,
-             i: int = 0) -> str:
+             i: int = 0, true_ac: int = 0) -> str:
     if op is None:
         return ""
 
@@ -77,8 +77,8 @@ def make_bin(op: str, tsi: Dict[str, Tuple[int, str, str, List[int]]], tm: TM, l
             if code[0] == -1:
                 return op
             else:
-                return hex(code[0] - load_addr)[2:].zfill(6)
-
+                return hex(code[0] - ac)[2:].zfill(6)
+                # return hex()[2:].zfill(6)
     else:
         try:
             return convert(op, i).code
@@ -300,6 +300,9 @@ def check_header(lines: Iterator[Tuple[int, str]], tko: TKO) -> Header:
         load_addr = to_int(header_parsed_line.args[0])
     except Exception:
         raise Exception(f'[{i}]: Invalid load address')
+
+    if load_addr != 0:
+        raise Exception(f'[{i}]: Load addr must be 0')
 
     return Header(header_parsed_line.label, load_addr, None)
 
