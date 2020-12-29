@@ -35,6 +35,9 @@ def setup_handlers(mw: Ui_MainWindow):
 
         try:
             module_l = one_pass_fn.__next__()
+
+            for i in module_l:
+                str(i)
         except StopIteration:
             is_end = True
             mw.err1.appendPlainText(" --- Success --- ")
@@ -42,6 +45,7 @@ def setup_handlers(mw: Ui_MainWindow):
             mw.full_pass.setEnabled(False)
             return True
         except Exception as e:
+            raise e
             mw.one_step.setEnabled(False)
             mw.full_pass.setEnabled(False)
             mw.err1.appendPlainText(str(e))

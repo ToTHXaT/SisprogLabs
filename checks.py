@@ -1,4 +1,5 @@
 from constants import _convert, convert
+from constants import twos
 from exceptions import *
 from lineparser import Directive, parse_line
 from lineparser import is_reg
@@ -48,7 +49,8 @@ def make_bin(op: str, tsi: Dict[str, Tuple[int, str, str, List[int]]], tm: TM, l
                 tm.lst.append((hex(ac - load_addr)[2:].zfill(6), ''))
                 return hex(code[0])[2:].zfill(6)
             elif frmt[0] == 'R':
-                return hex(code[0] - load_addr)[2:].zfill(6)
+                rp = hex(int(twos(code[0] - ac, 24), 2))[2:].zfill(6)
+                return rp
             else:
                 return ""
         else:
@@ -77,7 +79,8 @@ def make_bin(op: str, tsi: Dict[str, Tuple[int, str, str, List[int]]], tm: TM, l
             if code[0] == -1:
                 return op
             else:
-                return hex(code[0] - ac)[2:].zfill(6)
+                rp2 = hex(int(twos(code[0] - ac, 24), 2))[2:].zfill(6)
+                return rp2
                 # return hex()[2:].zfill(6)
     else:
         try:
@@ -201,6 +204,12 @@ class Cmd(NamedTuple):
             raise Exception(f'[{self.i}]: No more than 2 args is possible')
         for arg in args:
             if can_be_label(arg):
+                try:
+                    int(arg, 16)
+                    continue
+                except:
+                    pass
+
                 if frmt[0] in ('R', 'D') and arg[0] == '~':
                     raise Exception(f'[{self.i}]: `~` is only allowed in mixed mode')
 
