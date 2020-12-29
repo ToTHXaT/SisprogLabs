@@ -52,7 +52,7 @@ def setup_handlers(mw: Ui_MainWindow):
         mw.tm.clear()
         mw.err1.clear()
 
-        tsi_table.setColumnCount(5)
+        tsi_table.setColumnCount(3)
 
         tsi_table.setRowCount(module_l[0].tsi.__len__())
 
@@ -71,9 +71,9 @@ def setup_handlers(mw: Ui_MainWindow):
                     tsi_table.setItem(i, 1, QTableWidgetItem(f'{hex(v)[2:].zfill(6)}'))
                 else:
                     tsi_table.setItem(i, 1, QTableWidgetItem(f'-'))
-                tsi_table.setItem(i, 2, QTableWidgetItem(f'{tp}'))
-                tsi_table.setItem(i, 3, QTableWidgetItem(f'{prg}'))
-                tsi_table.setItem(i, 4, QTableWidgetItem(' '.join(str(k) for k in ref_list)))
+                # tsi_table.setItem(i, 2, QTableWidgetItem(f'{tp}'))
+                # tsi_table.setItem(i, 3, QTableWidgetItem(f'{prg}'))
+                tsi_table.setItem(i, 2, QTableWidgetItem(' '.join(str(k) for k in ref_list)))
 
             inserted += module.tsi.__len__()
 
