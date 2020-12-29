@@ -127,3 +127,12 @@ def do_one_pass(src: str, _tko: TKO, frmt: str):
             op_l.append(cmd)
 
         yield [*module_l, Module(header, extref, extdef, op_l, end, tsi, tm)]
+
+    if not state['was_end']:
+        raise Exception(f'[-]: End directive not found')
+
+    if header.load_addr <= end.load_addr <= header.load_addr + ac:
+        end_load_addr = End(end.load_addr)
+    else:
+        raise Exception(
+            f'[{i}]: boot address is bigger than  load address plus module size or lower than load addres')
