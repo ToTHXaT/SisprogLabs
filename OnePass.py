@@ -72,6 +72,10 @@ def do_one_pass(src: str, _tko: TKO, frmt: str):
             if pl.dir == 'csect':
                 end = End(0)
 
+                if lond := [key for key, (addr, tp, prg, _lst) in tsi.items() if tp == 'def' and addr == -1]:
+                    raise Exception(
+                        f'[-]: Following external names were not found in program: {" ".join(i for i in lond)}')
+
                 header = Header(header.program_name, header.load_addr, ac - header.load_addr)
 
                 module_l.append(Module(header, extref, extdef, op_l, end, tsi, tm))
@@ -108,6 +112,10 @@ def do_one_pass(src: str, _tko: TKO, frmt: str):
                     end = End(end_addr)
                 else:
                     end = End(header.load_addr)
+
+                if lond := [key for key, (addr, tp, prg, _lst) in tsi.items() if tp == 'def' and addr == -1]:
+                    raise Exception(
+                        f'[-]: Following external names were not found in program: {" ".join(i for i in lond)}')
 
                 header = Header(header.program_name, header.load_addr, ac - header.load_addr)
 

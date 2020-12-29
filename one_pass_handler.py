@@ -47,6 +47,15 @@ def setup_handlers(mw: Ui_MainWindow):
             mw.full_pass.setEnabled(False)
             return True
 
+        try:
+            for i in module_l:
+                str(i)
+        except Exception as e:
+            mw.err1.appendPlainText(str(e))
+            mw.one_step.setEnabled(False)
+            mw.full_pass.setEnabled(False)
+            return True
+
         mw.src2.clear()
         mw.tsi.clear()
         mw.tm.clear()
@@ -60,7 +69,14 @@ def setup_handlers(mw: Ui_MainWindow):
         _inserted = 0
 
         for module in module_l:
-            mw.src2.appendPlainText(str(module))
+            try:
+                s = str(module)
+                mw.src2.appendPlainText(s)
+            except Exception as e:
+                mw.err1.appendPlainText(str(e))
+                mw.one_step.setEnabled(False)
+                mw.full_pass.setEnabled(False)
+                return True
 
             rw = inserted
             row_count = inserted + module.tsi.__len__()

@@ -265,7 +265,7 @@ class Module(NamedTuple):
                         f'[-]: `{k}` - symbol not found. Used in {str(" ").join(hex(i)[2:].zfill(6) for i in ref_l)}')
 
                 if ac == -1 and tp != 'ref':
-                    raise Exception(f'[-]: `{k}` - symbol not found')
+                    raise Exception(f'[-]: `{k}` - symbol or extdef not found')
 
         body = '\n'.join(str(i) for i in self.op_l)
 
