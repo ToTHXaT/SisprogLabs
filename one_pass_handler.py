@@ -48,8 +48,15 @@ def setup_handlers(mw: Ui_MainWindow):
             return True
 
         try:
+            names = []
             for i in module_l:
                 str(i)
+
+                if i.header.program_name in names:
+                    raise Exception(f'[-]: Duplicate program name `{i.header.program_name}`')
+                names.append(i.header.program_name)
+
+
         except Exception as e:
             mw.err1.appendPlainText(str(e))
             mw.one_step.setEnabled(False)

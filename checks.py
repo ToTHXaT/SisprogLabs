@@ -145,7 +145,7 @@ class Cmd(NamedTuple):
 
     def validate(self, tsi: Dict[str, Tuple[int, str, str, List[int]]], tm: TM, load_addr: int,
                  frmt: str,
-                 prg_name: str):
+                 prg_name: str, next_ac: int):
         if len(self.args) == 0 and self.op.length > 1:
             raise Exception(f'[{self.i}]: Invalid params for `{self.op.name}`')
 
@@ -228,12 +228,12 @@ class Cmd(NamedTuple):
                     else:
                         if ts[0] == -1:
                             tsi.update({
-                                ag: (ts[0], ts[1], ts[2], [*ts[3], self.ac])
+                                ag: (ts[0], ts[1], ts[2], [*ts[3], next_ac])
                             })
                         else:
                             pass
                 else:
-                    tsi[ag] = (-1, '', prg_name, [self.ac])
+                    tsi[ag] = (-1, '', prg_name, [next_ac])
 
         return Cmd(self.i, self.op, args, code, self.ac)
 

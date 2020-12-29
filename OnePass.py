@@ -140,7 +140,17 @@ def do_one_pass(src: str, _tko: TKO, frmt: str):
                         tsi.update({pl.label: (ac, tp, sect, [])})
                         for ref in ref_l:
                             try:
-                                ln = next(op for op in op_l if op.ac == ref)
+                                # ln = next(op for op in op_l if op.ac == ref)
+                                ln = None
+
+                                prev = None
+                                for op in op_l:
+                                    if op.ac == ref:
+                                        ln = prev
+                                    prev = op
+
+                                if ln is None:
+                                    raise StopIteration()
 
                                 if ln.args.__len__() == 2:
                                     if ln.args[1] == pl.label:
@@ -191,7 +201,7 @@ def do_one_pass(src: str, _tko: TKO, frmt: str):
 
             cmd = Cmd(i, op, pl.args, '', ac - op.length)
 
-            cmd = cmd.validate(tsi, tm, header.load_addr, frmt, header.program_name)
+            cmd = cmd.validate(tsi, tm, header.load_addr, frmt, header.program_name, ac)
 
             op_l.append(cmd)
 
