@@ -57,6 +57,7 @@ def setup_handlers(mw: Ui_MainWindow):
         tsi_table.setRowCount(module_l[0].tsi.__len__())
 
         inserted = 0
+        _inserted = 0
 
         for module in module_l:
             mw.src2.appendPlainText(str(module))
@@ -77,19 +78,18 @@ def setup_handlers(mw: Ui_MainWindow):
 
             inserted += module.tsi.__len__()
 
-            inserted = 0
             tm = module.tm.lst
-            mw.tm.setRowCount(inserted + len(tm) + 1)
-            for i, (tmi, name) in enumerate(tm, inserted):
+            mw.tm.setRowCount(_inserted + len(tm) + 1)
+            for i, (tmi, name) in enumerate(tm, _inserted):
                 mw.tm.setItem(i, 0, QTableWidgetItem(tmi))
                 mw.tm.setItem(i, 1, QTableWidgetItem(name))
 
-            mw.tm.setItem(inserted + len(tm), 0, QTableWidgetItem(''))
-            mw.tm.setItem(inserted + len(tm), 1, QTableWidgetItem(''))
+            mw.tm.setItem(_inserted + len(tm), 0, QTableWidgetItem(''))
+            mw.tm.setItem(_inserted + len(tm), 1, QTableWidgetItem(''))
 
-            inserted += 1
+            _inserted += 1
 
-            inserted += len(tm)
+            _inserted += len(tm)
 
         return is_end
 
