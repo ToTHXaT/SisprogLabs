@@ -72,6 +72,7 @@ def do_one_pass(src: str, _tko: TKO, frmt: str):
             if pl.dir == 'csect':
                 end = End(0)
 
+
                 if lond := [key for key, (addr, tp, prg, _lst) in tsi.items() if tp == 'def' and addr == -1]:
                     raise Exception(
                         f'[-]: Following external names were not found in program: {" ".join(i for i in lond)}')
@@ -198,3 +199,9 @@ def do_one_pass(src: str, _tko: TKO, frmt: str):
 
     if not state['was_end']:
         raise Exception(f'[-]: End directive not found')
+
+    if header.load_addr <= end.load_addr <= header.load_addr + ac:
+        end_load_addr = End(end.load_addr)
+    else:
+        raise Exception(
+            f'[{i}]: boot address is bigger than  load address plus module size or lower than load addres')
